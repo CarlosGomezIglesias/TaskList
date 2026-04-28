@@ -3,7 +3,6 @@ package com.programa1.tasklist.data
 import android.content.ContentValues
 import android.content.Context
 import android.database.sqlite.SQLiteDatabase
-import androidx.core.content.contentValuesOf
 import com.programa1.tasklist.utils.DatabaseManager
 
 class CategoryDAO(val context: Context) {
@@ -30,7 +29,7 @@ class CategoryDAO(val context: Context) {
 
         } catch (e: Exception) {
             e.printStackTrace()
-        }finally {
+        } finally {
             close()
         }
 
@@ -44,11 +43,12 @@ class CategoryDAO(val context: Context) {
         values.put(Category.COLUMN_NAME, category.name)
 
         try {
-            val updateRows = db.update(Category.TABLE_NAME, values, "${Category.COLUMN_ID}=${category.id}", null)
+            val updateRows =
+                db.update(Category.TABLE_NAME, values, "${Category.COLUMN_ID}=${category.id}", null)
 
         } catch (e: Exception) {
             e.printStackTrace()
-        }finally {
+        } finally {
             close()
         }
 
@@ -58,23 +58,80 @@ class CategoryDAO(val context: Context) {
         open()
 
         try {
-            val deletedRows = db.delete(Category.TABLE_NAME, "${Category.COLUMN_ID}=${category.id}", null)
+            val deletedRows =
+                db.delete(Category.TABLE_NAME, "${Category.COLUMN_ID}=${category.id}", null)
 
         } catch (e: Exception) {
             e.printStackTrace()
-        }finally {
+        } finally {
             close()
         }
 
 
     }
 
-    fun getById(id: Int): Category {
+    fun getById(id: Int): Category? {
+        open()
 
+        var result: Category? = null
+
+        try {
+            val cursor = db.query(
+                Category.TABLE_NAME,
+                null,
+                "${Category.COLUMN_ID} = $id",
+                null,
+                null,
+                null,
+                null
+            )
+
+            if (cursor.moveToNext()) {
+                val itemId = cursor.getInt(cursor.getColumnIndexOrThrow(Category.COLUMN_ID))
+                val title = cursor.getString(cursor.getColumnIndexOrThrow(Category.COLUMN_NAME))
+                val category = Category(itemId, title)
+                result= Category(itemId, title)
+
+            }
+
+        } catch (e: Exception) {
+            e.printStackTrace()
+        } finally {
+            close()
+        }
+        return result
     }
 
     fun getAll(): List<Category> {
+        open()
 
+        val resultList: MutableList <Category> = mutableListOf()
+
+        try {
+            val cursor = db.query(
+                Category.TABLE_NAME,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null
+            )
+
+            while (cursor.moveToNext()) {
+                val itemId = cursor.getInt(cursor.getColumnIndexOrThrow(Category.COLUMN_ID))
+                val title = cursor.getString(cursor.getColumnIndexOrThrow(Category.COLUMN_NAME))
+                val category = Category(itemId, title)
+                resultList.add(category)
+
+            }
+
+        } catch (e: Exception) {
+            e.printStackTrace()
+        } finally {
+            close()
+        }
+     return resultList
     }
 
 }
