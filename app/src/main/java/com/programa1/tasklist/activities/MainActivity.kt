@@ -92,7 +92,7 @@ class MainActivity : AppCompatActivity() {
     fun showCategory(position: Int) {
 
         val category = categoryList[position]
-        Toast.makeText(this, category.name, Toast.LENGTH_LONG).show()
+        Toast.makeText(this, category.name, Toast.LENGTH_SHORT).show()
 
     }
 
