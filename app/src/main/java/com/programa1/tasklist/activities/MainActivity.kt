@@ -3,6 +3,7 @@ package com.programa1.tasklist.activities
 import android.os.Bundle
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
@@ -45,7 +46,7 @@ class MainActivity : AppCompatActivity() {
 
         categoryList = categoryDAO.getAll()
 
-        adapter = CategoryAdapter(categoryList, ::showCategory,::editCategory, ::deleteCategory)
+        adapter = CategoryAdapter(categoryList, ::showCategory, ::editCategory, ::deleteCategory)
 
         binding.recyclerView.adapter = adapter
 
@@ -56,15 +57,15 @@ class MainActivity : AppCompatActivity() {
 
     }
 
-    fun showCategoryDialog(category: Category){
+    fun showCategoryDialog(category: Category) {
         val dialogBinding = DialogCreateCategoryBinding.inflate(layoutInflater)
 
         val isEditing = category.id != -1
 
         var title = "Crear categoria"
 
-        if(isEditing){
-            title="Editar categoria"
+        if (isEditing) {
+            title = "Editar categoria"
 
         }
         dialogBinding.textField.editText!!.setText(category.name)
@@ -73,20 +74,29 @@ class MainActivity : AppCompatActivity() {
             .setIcon(R.drawable.ic_add_category)
             .setTitle(title)
             .setView(dialogBinding.root)
-            .setPositiveButton("Guardar") { dialog, which ->
-                val name = dialogBinding.textField.editText!!.text.toString()
-                category.name= name
+            .setPositiveButton("Guardar", null)
+            .setNegativeButton("No", null)
+            .setCancelable(false)
+            .create()
+        dialog.show()
+
+        dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener {
+            val name = dialogBinding.textField.editText!!.text.toString().trim()
+            if (name.isEmpty()) {
+                dialogBinding.textField.error = "El nombre no puede estar vacio"
+            } else {
+                dialogBinding.textField.error = null
+
+                category.name = name
                 categoryDAO.save(category)
                 categoryList = categoryDAO.getAll()
                 adapter.updateData(categoryList)
 
-            }
-            .setNegativeButton("No") { dialog, which ->
+                dialog.dismiss()
 
             }
-            .setCancelable(false)
-            .create()
-        dialog.show()
+
+        }
     }
 
     fun showCategory(position: Int) {
@@ -96,7 +106,7 @@ class MainActivity : AppCompatActivity() {
 
     }
 
-    fun editCategory(position: Int ){
+    fun editCategory(position: Int) {
         val category = categoryList[position]
         showCategoryDialog(category)
     }
