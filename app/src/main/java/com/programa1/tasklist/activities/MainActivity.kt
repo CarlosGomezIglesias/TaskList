@@ -7,6 +7,7 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.core.widget.addTextChangedListener
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.programa1.tasklist.R
 import com.programa1.tasklist.adapters.CategoryAdapter
@@ -63,15 +64,23 @@ class MainActivity : AppCompatActivity() {
         val isEditing = category.id != -1
 
         var title = "Crear categoria"
+        var icon = R.drawable.ic_add_category
 
         if (isEditing) {
             title = "Editar categoria"
-
+            icon = R.drawable.ic_edit
         }
         dialogBinding.textField.editText!!.setText(category.name)
+        dialogBinding.textField.editText!!.addTextChangedListener {
+            if (dialogBinding.textField.editText!!.text.trim().isEmpty()) {
+                dialogBinding.textField.error = "El nombre no puede estar vacio"
+            } else {
+                dialogBinding.textField.error = null
+            }
+        }
 
         val dialog = MaterialAlertDialogBuilder(this)
-            .setIcon(R.drawable.ic_add_category)
+            .setIcon(icon)
             .setTitle(title)
             .setView(dialogBinding.root)
             .setPositiveButton("Guardar", null)
@@ -82,11 +91,7 @@ class MainActivity : AppCompatActivity() {
 
         dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener {
             val name = dialogBinding.textField.editText!!.text.toString().trim()
-            if (name.isEmpty()) {
-                dialogBinding.textField.error = "El nombre no puede estar vacio"
-            } else {
-                dialogBinding.textField.error = null
-
+            if (name.isNotEmpty()) {
                 category.name = name
                 categoryDAO.save(category)
                 categoryList = categoryDAO.getAll()
