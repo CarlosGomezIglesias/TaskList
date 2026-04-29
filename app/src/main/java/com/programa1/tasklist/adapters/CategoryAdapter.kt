@@ -3,38 +3,38 @@ package com.programa1.tasklist.adapters
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.programa1.tasklist.data.Category
+import com.programa1.tasklist.databinding.ItemCategoryBinding
 
 
-    class CategoryAdapter(var items: List<Game>, val onClick: (Int) -> Unit) : RecyclerView.Adapter<GameViewHolder>(){
+class CategoryAdapter(var items: List<Category>, val onClick: (Int) -> Unit) : RecyclerView.Adapter<CategoryViewHolder>(){
 
-        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): GameViewHolder {
+        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CategoryViewHolder {
             val layoutInflater = LayoutInflater.from(parent.context)
-            val binding = ItemGameBinding.inflate(layoutInflater, parent, false)
-            return GameViewHolder(binding)
+            val binding = ItemCategoryBinding.inflate(layoutInflater, parent, false)
+            return CategoryViewHolder(binding)
         }
 
-        override fun onBindViewHolder(holder: GameViewHolder, position: Int) {
-            val game = items[position]
-            holder.render(game)
-            holder.itemView. {
+        override fun onBindViewHolder(holder: CategoryViewHolder, position: Int) {
+            val category = items[position]
+            holder.render(category)
+            holder.itemView.setOnClickListener {
                 onClick(position)
             }
+
         }
 
         override fun getItemCount(): Int = items.size
 
-        fun updateData(dataSet: List<Game>){
+        fun updateData(dataSet: List<Category>){
             items = dataSet
             notifyDataSetChanged()
         }
     }
 
-    class CategoryViewHolder(val binding: ItemGameBinding): RecyclerView.ViewHolder(binding.root){
-        fun render(game: Game) {
-            binding.titleTextView.text = game.title
-            binding.genreChip.text = game.genre
-            binding.shortDescription.text = game.shortDescription
-            Picasso.get().load(game.image).into(binding.thumbnailImageView)
+    class CategoryViewHolder(val binding: ItemCategoryBinding): RecyclerView.ViewHolder(binding.root){
+        fun render(category: Category) {
+            binding.nameTextView.text = category.name
         }
 
     }

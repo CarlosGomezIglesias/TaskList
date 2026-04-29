@@ -1,6 +1,7 @@
 package com.programa1.tasklist.activities
 
 import android.os.Bundle
+import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
@@ -16,7 +17,8 @@ class MainActivity : AppCompatActivity() {
     lateinit var binding: ActivityMainBinding
     lateinit var adapter: CategoryAdapter
 
-    lateinit var categoryList : List<Category>
+    var categoryList : List<Category> = emptyList()
+
     lateinit var categoryDAO: CategoryDAO
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -25,13 +27,23 @@ class MainActivity : AppCompatActivity() {
 
         binding = ActivityMainBinding.inflate(layoutInflater)
 
-        setContentView(R.layout.activity_main)
+        setContentView(binding.root)
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
+
+        categoryDAO = CategoryDAO(this)
+        categoryList = categoryDAO.getAll()
+
+        adapter= CategoryAdapter(categoryList){position ->
+            val category = categoryList[position]
+            Toast.makeText(this,category.name, Toast.LENGTH_LONG).show()
+        }
+        binding.recyclerView.adapter=adapter
+
     }
 
-    categoryDAO = CategoryAdapter
+
 }

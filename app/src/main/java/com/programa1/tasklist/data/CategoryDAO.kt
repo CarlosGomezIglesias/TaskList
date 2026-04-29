@@ -90,9 +90,10 @@ class CategoryDAO(val context: Context) {
                 val itemId = cursor.getInt(cursor.getColumnIndexOrThrow(Category.COLUMN_ID))
                 val title = cursor.getString(cursor.getColumnIndexOrThrow(Category.COLUMN_NAME))
                 val category = Category(itemId, title)
-                result= Category(itemId, title)
+                result = Category(itemId, title)
 
             }
+            cursor.close()
 
         } catch (e: Exception) {
             e.printStackTrace()
@@ -105,7 +106,7 @@ class CategoryDAO(val context: Context) {
     fun getAll(): List<Category> {
         open()
 
-        val resultList: MutableList <Category> = mutableListOf()
+        val resultList: MutableList<Category> = mutableListOf()
 
         try {
             val cursor = db.query(
@@ -125,13 +126,14 @@ class CategoryDAO(val context: Context) {
                 resultList.add(category)
 
             }
+            cursor.close()
 
         } catch (e: Exception) {
             e.printStackTrace()
         } finally {
             close()
         }
-     return resultList
+        return resultList
     }
 
 }

@@ -16,19 +16,19 @@
         android:textSize="18sp"/>
 
     <Button
-        android:id="@+id/deleteButton"
-        style="@style/Widget.Material3.Button.IconButton.Outlined"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:icon="@drawable/ic_launcher_background"
-        app:iconTint="#8C051D"/>
-
-    <Button
         android:id="@+id/editButton"
         style="@style/Widget.Material3.Button.IconButton.Outlined"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:icon="@drawable/ic_launcher_background"
+        app:icon="@drawable/ic_edit"
+        app:iconTint="#8C051D"/>
+
+    <Button
+        android:id="@+id/deleteButton"
+        style="@style/Widget.Material3.Button.IconButton.Outlined"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:icon="@drawable/ic_delete"
         app:iconTint="#8C051D"/>
 
 </LinearLayout>
