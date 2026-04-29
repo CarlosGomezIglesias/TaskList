@@ -17,6 +17,14 @@ class CategoryDAO(val context: Context) {
         db.close()
     }
 
+    fun save(category: Category){
+        if (category.id!=-1){
+            update(category)
+        }else {
+            insert(category)
+        }
+    }
+
     fun insert(category: Category) {
 
         open()

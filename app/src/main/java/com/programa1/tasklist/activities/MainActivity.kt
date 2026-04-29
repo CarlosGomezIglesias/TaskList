@@ -3,7 +3,6 @@ package com.programa1.tasklist.activities
 import android.os.Bundle
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
-import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
@@ -13,6 +12,7 @@ import com.programa1.tasklist.adapters.CategoryAdapter
 import com.programa1.tasklist.data.Category
 import com.programa1.tasklist.data.CategoryDAO
 import com.programa1.tasklist.databinding.ActivityMainBinding
+import com.programa1.tasklist.databinding.DialogCreateCategoryBinding
 
 class MainActivity : AppCompatActivity() {
 
@@ -45,14 +45,48 @@ class MainActivity : AppCompatActivity() {
 
         categoryList = categoryDAO.getAll()
 
-        adapter = CategoryAdapter(categoryList, ::showCategory, ::deleteCategory)
+        adapter = CategoryAdapter(categoryList, ::showCategory,::editCategory, ::deleteCategory)
 
         binding.recyclerView.adapter = adapter
 
         binding.addCategoryFAB.setOnClickListener {
             //Navegar al activity de crear, o mostrar una alerta de crear
+            showCategoryDialog(Category(-1, ""))
         }
 
+    }
+
+    fun showCategoryDialog(category: Category){
+        val dialogBinding = DialogCreateCategoryBinding.inflate(layoutInflater)
+
+        val isEditing = category.id != -1
+
+        var title = "Crear categoria"
+
+        if(isEditing){
+            title="Editar categoria"
+
+        }
+        dialogBinding.textField.editText!!.setText(category.name)
+
+        val dialog = MaterialAlertDialogBuilder(this)
+            .setIcon(R.drawable.ic_add_category)
+            .setTitle(title)
+            .setView(dialogBinding.root)
+            .setPositiveButton("Guardar") { dialog, which ->
+                val name = dialogBinding.textField.editText!!.text.toString()
+                category.name= name
+                categoryDAO.save(category)
+                categoryList = categoryDAO.getAll()
+                adapter.updateData(categoryList)
+
+            }
+            .setNegativeButton("No") { dialog, which ->
+
+            }
+            .setCancelable(false)
+            .create()
+        dialog.show()
     }
 
     fun showCategory(position: Int) {
@@ -60,6 +94,11 @@ class MainActivity : AppCompatActivity() {
         val category = categoryList[position]
         Toast.makeText(this, category.name, Toast.LENGTH_LONG).show()
 
+    }
+
+    fun editCategory(position: Int ){
+        val category = categoryList[position]
+        showCategoryDialog(category)
     }
 
     fun deleteCategory(position: Int) {
