@@ -7,7 +7,11 @@ import com.programa1.tasklist.data.Category
 import com.programa1.tasklist.databinding.ItemCategoryBinding
 
 
-class CategoryAdapter(var items: List<Category>, val onClick: (Int) -> Unit) : RecyclerView.Adapter<CategoryViewHolder>(){
+class CategoryAdapter(
+    var items: List<Category>,
+    val onClick: (Int) -> Unit,
+    val onDelete: (Int) -> Unit
+) : RecyclerView.Adapter<CategoryViewHolder>(){
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CategoryViewHolder {
             val layoutInflater = LayoutInflater.from(parent.context)
@@ -20,6 +24,10 @@ class CategoryAdapter(var items: List<Category>, val onClick: (Int) -> Unit) : R
             holder.render(category)
             holder.itemView.setOnClickListener {
                 onClick(position)
+            }
+            holder.binding.deleteButton.setOnClickListener {
+                onDelete(position)
+
             }
 
         }

@@ -3,9 +3,11 @@ package com.programa1.tasklist.activities
 import android.os.Bundle
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.programa1.tasklist.R
 import com.programa1.tasklist.adapters.CategoryAdapter
 import com.programa1.tasklist.data.Category
@@ -17,7 +19,7 @@ class MainActivity : AppCompatActivity() {
     lateinit var binding: ActivityMainBinding
     lateinit var adapter: CategoryAdapter
 
-    var categoryList : List<Category> = emptyList()
+    var categoryList: List<Category> = emptyList()
 
     lateinit var categoryDAO: CategoryDAO
 
@@ -35,15 +37,52 @@ class MainActivity : AppCompatActivity() {
         }
 
         categoryDAO = CategoryDAO(this)
+
+        /*for (i in 1..10) {
+            val category = Category(-1, "Category $i")
+            categoryDAO.insert(category)
+        }*/
+
         categoryList = categoryDAO.getAll()
 
-        adapter= CategoryAdapter(categoryList){position ->
-            val category = categoryList[position]
-            Toast.makeText(this,category.name, Toast.LENGTH_LONG).show()
+        adapter = CategoryAdapter(categoryList, ::showCategory, ::deleteCategory)
+
+        binding.recyclerView.adapter = adapter
+
+        binding.addCategoryFAB.setOnClickListener {
+            //Navegar al activity de crear, o mostrar una alerta de crear
         }
-        binding.recyclerView.adapter=adapter
 
     }
 
+    fun showCategory(position: Int) {
+
+        val category = categoryList[position]
+        Toast.makeText(this, category.name, Toast.LENGTH_LONG).show()
+
+    }
+
+    fun deleteCategory(position: Int) {
+        val category = categoryList[position]
+
+        //Patron Builder (evita tener que llamar al objeto cada vez que se hace .setX)
+        val dialog = MaterialAlertDialogBuilder(this)
+            .setIcon(R.drawable.ic_delete)
+            .setTitle("Borrar categoria")
+            .setMessage("¿Esta seguro que quiere borrar la categoria \"${category.name}\"?")
+            .setPositiveButton("Si") { dialog, which ->
+                categoryDAO.delete(category)
+                categoryList = categoryDAO.getAll()
+                adapter.updateData(categoryList)
+            }
+            .setNegativeButton("No") { dialog, which ->
+
+            }
+            .setCancelable(false)
+            .create()
+        dialog.show()
+
+
+    }
 
 }
