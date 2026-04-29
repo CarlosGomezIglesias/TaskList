@@ -20,9 +20,7 @@ class MainActivity : AppCompatActivity() {
 
     lateinit var binding: ActivityMainBinding
     lateinit var adapter: CategoryAdapter
-
     var categoryList: List<Category> = emptyList()
-
     lateinit var categoryDAO: CategoryDAO
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -89,17 +87,43 @@ class MainActivity : AppCompatActivity() {
             .create()
         dialog.show()
 
-        dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener {
-            val name = dialogBinding.textField.editText!!.text.toString().trim()
-            if (name.isNotEmpty()) {
+        //Hacer que se desactive el boton de guardar hasta que haya texto valido
+        val positiveButton = dialog.getButton(AlertDialog.BUTTON_POSITIVE)
+
+        // Estado inicial
+        val editText = dialogBinding.textField.editText!!
+        positiveButton.isEnabled = editText.text.toString().trim().isNotEmpty()
+
+        // Escuchar cambios en el texto
+        editText.addTextChangedListener {
+            val text = it.toString().trim()
+            if (text.isEmpty()) {
+                dialogBinding.textField.error = "El nombre no puede ser vacío"
+                positiveButton.isEnabled = false
+            } else {
+                dialogBinding.textField.error = null
+                positiveButton.isEnabled = true
+            }
+            positiveButton.setOnClickListener {
+                val name = editText.text.toString().trim()
                 category.name = name
                 categoryDAO.save(category)
                 categoryList = categoryDAO.getAll()
                 adapter.updateData(categoryList)
-
                 dialog.dismiss()
-
             }
+
+
+            //Personaliza el boton positivo
+            /*dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener {
+                val name = dialogBinding.textField.editText!!.text.toString().trim()
+                if (name.isNotEmpty()) {
+                    category.name = name
+                    categoryDAO.save(category)
+                    categoryList = categoryDAO.getAll()
+                    adapter.updateData(categoryList)
+                    dialog.dismiss()
+                }*/
 
         }
     }
