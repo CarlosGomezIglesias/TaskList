@@ -2,6 +2,7 @@ package com.programa1.tasklist.data
 
 import android.content.ContentValues
 import android.content.Context
+import android.database.Cursor
 import android.database.sqlite.SQLiteDatabase
 import com.programa1.tasklist.utils.DatabaseManager
 
@@ -25,12 +26,26 @@ class CategoryDAO(val context: Context) {
         }
     }
 
+    fun getContentValues(category: Category): ContentValues{
+
+        val values = ContentValues()
+        values.put(Category.COLUMN_NAME, category.name)
+        return values
+    }
+
+    fun cursorToEntity(cursor: Cursor): Category{
+
+            val itemId = cursor.getInt(cursor.getColumnIndexOrThrow(Category.COLUMN_ID))
+            val title = cursor.getString(cursor.getColumnIndexOrThrow(Category.COLUMN_NAME))
+            return Category(itemId, title)
+
+    }
+
     fun insert(category: Category) {
 
         open()
 
-        val values = ContentValues()
-        values.put(Category.COLUMN_NAME, category.name)
+        val values = getContentValues(category)
 
         try {
             val newRowId = db.insert(Category.TABLE_NAME, null, values)
@@ -46,9 +61,7 @@ class CategoryDAO(val context: Context) {
 
     fun update(category: Category) {
         open()
-        val values = ContentValues()
-
-        values.put(Category.COLUMN_NAME, category.name)
+        val values = getContentValues(category)
 
         try {
             val updateRows =
@@ -95,10 +108,7 @@ class CategoryDAO(val context: Context) {
             )
 
             if (cursor.moveToNext()) {
-                val itemId = cursor.getInt(cursor.getColumnIndexOrThrow(Category.COLUMN_ID))
-                val title = cursor.getString(cursor.getColumnIndexOrThrow(Category.COLUMN_NAME))
-                val category = Category(itemId, title)
-                result = Category(itemId, title)
+                result = cursorToEntity(cursor)
 
             }
             cursor.close()
@@ -128,9 +138,7 @@ class CategoryDAO(val context: Context) {
             )
 
             while (cursor.moveToNext()) {
-                val itemId = cursor.getInt(cursor.getColumnIndexOrThrow(Category.COLUMN_ID))
-                val title = cursor.getString(cursor.getColumnIndexOrThrow(Category.COLUMN_NAME))
-                val category = Category(itemId, title)
+                val category = cursorToEntity(cursor)
                 resultList.add(category)
 
             }
