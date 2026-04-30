@@ -133,7 +133,7 @@ class MainActivity : AppCompatActivity() {
 
         val category = categoryList[position]
         val intent= Intent(this, TaskListActivity::class.java)
-        intent.putExtra("CATEGORY_ID", category.id)
+        intent.putExtra(TaskListActivity.EXTRA_CATEGORY_ID, category.id)
         startActivity(intent)
 
     }
