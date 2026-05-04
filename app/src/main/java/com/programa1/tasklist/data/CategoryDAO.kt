@@ -79,8 +79,9 @@ class CategoryDAO(val context: Context) {
         open()
 
         try {
-            val deletedRows =
-                db.delete(Category.TABLE_NAME, "${Category.COLUMN_ID}=${category.id}", null)
+            db.execSQL("PRAGMA foreign_keys=ON")
+
+            val deletedRows = db.delete(Category.TABLE_NAME, "${Category.COLUMN_ID}=${category.id}", null)
 
         } catch (e: Exception) {
             e.printStackTrace()

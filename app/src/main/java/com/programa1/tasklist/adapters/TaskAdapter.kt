@@ -2,7 +2,9 @@ package com.programa1.tasklist.adapters
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
+import com.programa1.tasklist.adapters.utils.TaskDiffUtils
 import com.programa1.tasklist.data.Task
 import com.programa1.tasklist.databinding.ItemTaskBinding
 
@@ -24,21 +26,21 @@ class TaskAdapter(
             val task = items[position]
             holder.render(task)
             holder.itemView.setOnClickListener {
-                onClick(position)
+                onClick(holder.absoluteAdapterPosition)
             }
             holder.binding.doneCheckBox.setOnCheckedChangeListener { button, bool ->
                 //solo accede al codigo si es el usuario el que a dado click
                 if (holder.binding.doneCheckBox.isPressed){
-                    onClick(position)
+                    onClick(holder.absoluteAdapterPosition)
                 }
 
             }
             holder.binding.editButton.setOnClickListener {
-                onEdit(position)
+                onEdit(holder.absoluteAdapterPosition)
 
             }
             holder.binding.deleteButton.setOnClickListener {
-                onDelete(position)
+                onDelete(holder.absoluteAdapterPosition)
 
             }
 
@@ -48,8 +50,10 @@ class TaskAdapter(
         override fun getItemCount(): Int = items.size
 
         fun updateData(dataSet: List<Task>){
+            val diffUtils = TaskDiffUtils(items, dataSet)
+            val diffResult = DiffUtil.calculateDiff(diffUtils)
             items = dataSet
-            notifyDataSetChanged()
+            diffResult.dispatchUpdatesTo(this)
         }
     }
 
