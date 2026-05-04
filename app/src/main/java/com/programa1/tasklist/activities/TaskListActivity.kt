@@ -51,12 +51,12 @@ class TaskListActivity : AppCompatActivity() {
         val categoryId=intent.getIntExtra(EXTRA_CATEGORY_ID, -1)
         category=categoryDAO.getById(categoryId)
 
-        //crear tarea de prueba
+        /*crear tarea de prueba
         val task1= Task(-1, "comprar ron", false, category!!)
         val task2= Task(-1, "comprar flores", false, category!!)
         taskDAO.insert(task1)
         taskDAO.insert(task2)
-        //fin codigo pruebas
+        fin codigo pruebas*/
 
         category?.let {
             taskList=taskDAO.getAllByCategory(it)
