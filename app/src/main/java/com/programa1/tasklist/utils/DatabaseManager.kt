@@ -14,7 +14,6 @@ class DatabaseManager (context: Context) : SQLiteOpenHelper(context, DATABASE_NA
         db.execSQL("PRAGMA foreign_keys=ON;")
     }
     override fun onCreate(db: SQLiteDatabase) {
-        db.execSQL("PRAGMA foreign_keys=ON")
         db.execSQL(Category.SQL_CREATE)
         db.execSQL(Task.SQL_CREATE)
     }

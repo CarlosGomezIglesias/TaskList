@@ -1,6 +1,7 @@
 package com.programa1.tasklist.activities
 
 import android.content.Intent
+import android.graphics.Canvas
 import android.os.Bundle
 import android.view.MenuItem
 import androidx.activity.enableEdgeToEdge
@@ -17,6 +18,7 @@ import com.programa1.tasklist.data.CategoryDAO
 import com.programa1.tasklist.data.Task
 import com.programa1.tasklist.data.TaskDAO
 import com.programa1.tasklist.databinding.ActivityTaskListBinding
+import it.xabaras.android.recyclerview.swipedecorator.RecyclerViewSwipeDecorator
 
 class TaskListActivity : AppCompatActivity() {
 
@@ -68,22 +70,41 @@ class TaskListActivity : AppCompatActivity() {
         adapter= TaskAdapter(taskList,::showTask, ::editTask, ::deleteTask)
         binding.recyclerView.adapter=adapter
 
+        binding.addTask.setOnClickListener {
+            val intent = Intent(this, TaskDetailActivity::class.java)
+            intent.putExtra(TaskDetailActivity.EXTRA_CATEGORY_ID, category?.id ?: -1)
+            startActivity(intent)
+        }
+
         configureGestures()
+    }
 
+    override fun onResume() {
+        super.onResume()
+        reloadData()
+    }
 
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when(item.itemId) {
+            android.R.id.home -> {
+                finish()
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
+        }
     }
 
     fun editTask(position: Int){
         val task= taskList[position]
 
-        adapter.notifyItemChanged(position)
-
         val intent = Intent(this, TaskDetailActivity::class.java)
         intent.putExtra(TaskDetailActivity.EXTRA_CATEGORY_ID, task.category.id)
         intent.putExtra(TaskDetailActivity.EXTRA_TASK_ID, task.id)
         startActivity(intent)
-    }
 
+        adapter.notifyItemChanged(position)
+
+    }
     fun showTask(position: Int){
         val task= taskList[position]
 
@@ -93,16 +114,6 @@ class TaskListActivity : AppCompatActivity() {
         adapter.notifyItemChanged(position) //Obliga a actualizar el check antes de actualizar los datos
 
         reloadData()
-    }
-
-    override fun onResume() {
-        super.onResume()
-        reloadData()
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        return when(item.)
-        super.onOptionsItemSelected(item)
     }
     fun reloadData(){
         category?.let {
@@ -153,8 +164,36 @@ class TaskListActivity : AppCompatActivity() {
                     }else {
                         editTask(viewHolder.absoluteAdapterPosition)
                     }
-                    adapter.notifyItemChanged(viewHolder.absoluteAdapterPosition)
                 }
+                //Esto es para personalizar la fila cuando deslizo a derecha o izquierda
+                override fun onChildDraw(c: Canvas, recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder,
+                                         dX: Float, dY: Float, actionState: Int, isCurrentlyActive: Boolean) {
+
+                    val whiteColor = getColor(R.color.white)
+
+                    RecyclerViewSwipeDecorator.Builder(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive)
+
+                        // Swipe left action
+                        .addSwipeLeftLabel("BORRAR")
+                        .setSwipeLeftLabelColor(whiteColor)
+                        .addSwipeLeftActionIcon(R.drawable.ic_delete)
+                        //.setSwipeLeftActionIconTint(whiteColor) Sobreescribe el color del icono si tiene
+                        .addSwipeLeftBackgroundColor(getColor(R.color.red))
+
+                        // Swipe right action
+                        .addSwipeRightLabel("EDITAR")
+                        .setSwipeRightLabelColor(whiteColor)
+                        .addSwipeRightActionIcon(R.drawable.ic_edit)
+                        //.setSwipeRightActionIconTint(whiteColor) Sobreescribe el color del icono si tiene
+                        .addSwipeRightBackgroundColor(getColor(R.color.green))
+
+                        // Build
+                        .create()
+                        .decorate()
+
+                    super.onChildDraw(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive)
+                }
+
 
             }
         )

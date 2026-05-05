@@ -68,7 +68,6 @@ class TaskDAO(val context: Context) {
 
         try {
             val updateRows = db.update(Task.TABLE_NAME, values,"${Task.COLUMN_ID}=${task.id}", null)
-                db.update(Task.TABLE_NAME, values, "${Task.COLUMN_ID}=${task.id}", null)
 
         } catch (e: Exception) {
             e.printStackTrace()
@@ -82,8 +81,7 @@ class TaskDAO(val context: Context) {
         open()
 
         try {
-            val deletedRows =
-                db.delete(Task.TABLE_NAME, "${Task.COLUMN_ID}=${task.id}", null)
+            val deletedRows = db.delete(Task.TABLE_NAME, "${Task.COLUMN_ID}=${task.id}", null)
 
         } catch (e: Exception) {
             e.printStackTrace()
@@ -91,6 +89,20 @@ class TaskDAO(val context: Context) {
             close()
         }
 
+
+    }
+
+    fun deleteAll() {
+        open()
+
+        try {
+            // Issue SQL statement.
+            val deletedRows = db.delete(Task.TABLE_NAME, null, null)
+        } catch (e: Exception) {
+            e.printStackTrace()
+        } finally {
+            close()
+        }
 
     }
 
@@ -124,27 +136,27 @@ class TaskDAO(val context: Context) {
         return result
     }
 
-    fun getAllByCategory(category: Category): List<Task> {
+    fun getAllBy(where: String?) : List<Task> {
         open()
 
         val resultList: MutableList<Task> = mutableListOf()
 
         try {
             val cursor = db.query(
-                Task.TABLE_NAME,
-                null,
-                "${Task.COLUMN_CATEGORY_ID}=${category.id}",
-                null,
-                null,
-                null,
-                null
+                Task.TABLE_NAME,   // The table to query
+                null,             // The array of columns to return (pass null to get all)
+                where,              // The columns for the WHERE clause
+                null,          // The values for the WHERE clause
+                null,                   // don't group the rows
+                null,                   // don't filter by row groups
+                Task.COLUMN_DONE               // The sort order
             )
 
             while (cursor.moveToNext()) {
                 val task = cursorToEntity(cursor)
                 resultList.add(task)
-
             }
+
             cursor.close()
 
         } catch (e: Exception) {
@@ -152,38 +164,16 @@ class TaskDAO(val context: Context) {
         } finally {
             close()
         }
+
         return resultList
     }
 
+    fun getAllByCategory(category: Category): List<Task> {
+        return getAllBy("${Task.COLUMN_CATEGORY_ID} = ${category.id}")
+    }
+
     fun getAll(): List<Task> {
-        open()
-
-        val resultList: MutableList<Task> = mutableListOf()
-
-        try {
-            val cursor = db.query(
-                Task.TABLE_NAME,
-                null,
-                null,
-                null,
-                null,
-                null,
-                null
-            )
-
-            while (cursor.moveToNext()) {
-                val task = cursorToEntity(cursor)
-                resultList.add(task)
-
-            }
-            cursor.close()
-
-        } catch (e: Exception) {
-            e.printStackTrace()
-        } finally {
-            close()
-        }
-        return resultList
+        return getAllBy(null)
     }
 
 }

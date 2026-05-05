@@ -18,8 +18,8 @@ data class Task (
                     "$COLUMN_ID INTEGER PRIMARY KEY AUTOINCREMENT, " +
                     "$COLUMN_TITLE TEXT," +
                     "$COLUMN_DONE BOOLEAN,"+
-                    "$COLUMN_CATEGORY_ID INTEGER," +
-                    "FOREIGN KEY($COLUMN_CATEGORY_ID) REFERENCES ${Category.TABLE_NAME}(${Category.COLUMN_ID}) ON DELETE CASCADE)"
+                    "$COLUMN_CATEGORY_ID INTEGER " +
+                    "REFERENCES ${Category.TABLE_NAME}(${Category.COLUMN_ID}) ON DELETE CASCADE)"
 
         const val SQL_DELETE = "DROP TABLE IF EXISTS $TABLE_NAME"
 

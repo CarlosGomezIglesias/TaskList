@@ -29,8 +29,8 @@ class MainActivity : AppCompatActivity() {
         enableEdgeToEdge()
 
         binding = ActivityMainBinding.inflate(layoutInflater)
-
         setContentView(binding.root)
+
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
@@ -51,26 +51,29 @@ class MainActivity : AppCompatActivity() {
         binding.recyclerView.adapter = adapter
 
         binding.addCategoryFAB.setOnClickListener {
-            //Navegar al activity de crear, o mostrar una alerta de crear
+            //Navegar a una alerta de crear
             showCategoryDialog(Category(-1, ""))
         }
 
     }
 
     fun showCategoryDialog(category: Category) {
+
         val dialogBinding = DialogCreateCategoryBinding.inflate(layoutInflater)
 
         val isEditing = category.id != -1
 
         var title = "Crear categoria"
+
         var icon = R.drawable.ic_add_category
 
+        //Al pulsar en crear o editar categoria distingue cual es la opcion elegida
         if (isEditing) {
             title = "Editar categoria"
             icon = R.drawable.ic_edit
         }
         dialogBinding.textField.editText!!.setText(category.name)
-        dialogBinding.textField.editText!!.addTextChangedListener {
+        dialogBinding.textField.editText!!.addTextChangedListener { //Si esta el nombre en blanco avisa
             if (dialogBinding.textField.editText!!.text.trim().isEmpty()) {
                 dialogBinding.textField.error = "El nombre no puede estar vacio"
             } else {
@@ -99,7 +102,7 @@ class MainActivity : AppCompatActivity() {
         editText.addTextChangedListener {
             val text = it.toString().trim()
             if (text.isEmpty()) {
-                dialogBinding.textField.error = "El nombre no puede ser vacío"
+                dialogBinding.textField.error = "El nombre no puede estar vacío"
                 positiveButton.isEnabled = false
             } else {
                 dialogBinding.textField.error = null

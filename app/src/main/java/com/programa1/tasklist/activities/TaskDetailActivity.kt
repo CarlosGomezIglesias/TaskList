@@ -1,6 +1,7 @@
 package com.programa1.tasklist.activities
 
 import android.os.Bundle
+import android.view.MenuItem
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
@@ -31,11 +32,12 @@ class TaskDetailActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
-
+        //llamada a la vista del binding
         binding = ActivityTaskDetailBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        setContentView(R.layout.activity_task_detail)
+        //setContentView(R.layout.activity_task_detail)
+
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
@@ -66,6 +68,15 @@ class TaskDetailActivity : AppCompatActivity() {
             taskDAO.save(task)
             Snackbar.make(binding.root, "Tarea Guardada", Snackbar.LENGTH_SHORT).show()
             finish()
+        }
+    }
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when(item.itemId) {
+            android.R.id.home -> {
+                finish()
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
         }
     }
 }

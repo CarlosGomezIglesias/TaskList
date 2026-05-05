@@ -64,8 +64,7 @@ class CategoryDAO(val context: Context) {
         val values = getContentValues(category)
 
         try {
-            val updateRows =
-                db.update(Category.TABLE_NAME, values, "${Category.COLUMN_ID}=${category.id}", null)
+            val updateRows = db.update(Category.TABLE_NAME, values, "${Category.COLUMN_ID}=${category.id}", null)
 
         } catch (e: Exception) {
             e.printStackTrace()
@@ -89,6 +88,20 @@ class CategoryDAO(val context: Context) {
             close()
         }
 
+
+    }
+
+    fun deleteAll() {
+        open()
+
+        try {
+            // Issue SQL statement.
+            val deletedRows = db.delete(Category.TABLE_NAME, null, null)
+        } catch (e: Exception) {
+            e.printStackTrace()
+        } finally {
+            close()
+        }
 
     }
 
