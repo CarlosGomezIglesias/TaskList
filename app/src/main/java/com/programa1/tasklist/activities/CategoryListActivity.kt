@@ -2,7 +2,6 @@ package com.programa1.tasklist.activities
 
 import android.content.Intent
 import android.os.Bundle
-import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
@@ -14,12 +13,12 @@ import com.programa1.tasklist.R
 import com.programa1.tasklist.adapters.CategoryAdapter
 import com.programa1.tasklist.data.Category
 import com.programa1.tasklist.data.CategoryDAO
-import com.programa1.tasklist.databinding.ActivityMainBinding
+import com.programa1.tasklist.databinding.ActivityCategoryListBinding
 import com.programa1.tasklist.databinding.DialogCreateCategoryBinding
 
-class MainActivity : AppCompatActivity() {
+class CategoryListActivity : AppCompatActivity() {
 
-    lateinit var binding: ActivityMainBinding
+    lateinit var binding: ActivityCategoryListBinding
     lateinit var adapter: CategoryAdapter
     var categoryList: List<Category> = emptyList()
     lateinit var categoryDAO: CategoryDAO
@@ -28,7 +27,7 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
 
-        binding = ActivityMainBinding.inflate(layoutInflater)
+        binding = ActivityCategoryListBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->

@@ -1,5 +1,6 @@
 package com.programa1.tasklist.activities
 
+import android.app.DatePickerDialog
 import android.os.Bundle
 import android.view.MenuItem
 import androidx.activity.enableEdgeToEdge
@@ -13,6 +14,7 @@ import com.programa1.tasklist.data.CategoryDAO
 import com.programa1.tasklist.data.Task
 import com.programa1.tasklist.data.TaskDAO
 import com.programa1.tasklist.databinding.ActivityTaskDetailBinding
+import java.util.Calendar
 
 class TaskDetailActivity : AppCompatActivity() {
 
@@ -57,14 +59,40 @@ class TaskDetailActivity : AppCompatActivity() {
             task= taskDAO.getById(taskId)!!
             supportActionBar?.title="Editar tarea"
         }else{
-            task= Task(-1,"", false, category!!)
+            task= Task(-1,"", "",false,null ,false, category!!)
             supportActionBar?.title="Crear tarea"
         }
 
         binding.titleTextField.editText!!.setText(task.title)
+        binding.descriptionTextField.editText!!.setText(task.description)
+        binding.dateTextField.editText?.setOnClickListener {
+
+            val calendar = Calendar.getInstance()
+            val year = calendar.get(Calendar.YEAR)
+            val month = calendar.get(Calendar.MONTH)
+            val day = calendar.get(Calendar.DAY_OF_MONTH)
+
+            val datePicker = DatePickerDialog(
+                this,
+                { _, selectedYear, selectedMonth, selectedDay ->
+
+                    val fecha = "$selectedDay/${selectedMonth + 1}/$selectedYear"
+
+                    binding.dateTextField.editText?.setText(fecha)
+
+                },
+                year,
+                month,
+                day
+            )
+
+            datePicker.show()
+        }
 
         binding.saveButton.setOnClickListener {
             task.title=binding.titleTextField.editText!!.text.toString()
+            task.description=binding.descriptionTextField.editText!!.text.toString()
+            task.limitDate=binding.dateTextField.editText?.
             taskDAO.save(task)
             Snackbar.make(binding.root, "Tarea Guardada", Snackbar.LENGTH_SHORT).show()
             finish()

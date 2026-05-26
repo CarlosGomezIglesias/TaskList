@@ -4,6 +4,7 @@ import android.content.ContentValues
 import android.content.Context
 import android.database.Cursor
 import android.database.sqlite.SQLiteDatabase
+import androidx.core.database.getLongOrNull
 import com.programa1.tasklist.utils.DatabaseManager
 
 class TaskDAO(val context: Context) {
@@ -30,7 +31,10 @@ class TaskDAO(val context: Context) {
 
         val values = ContentValues()
         values.put(Task.COLUMN_TITLE, task.title)
+        values.put(Task.COLUMN_DESCRIPTION, task.description)
         values.put(Task.COLUMN_DONE, task.done)
+        values.put(Task.COLUMN_PRIORITY, task.priority)
+        values.put(Task.COLUMN_LIMIT_DATE, task.limitDate)
         values.put(Task.COLUMN_CATEGORY_ID, task.category.id)
         return values
     }
@@ -38,10 +42,13 @@ class TaskDAO(val context: Context) {
     fun cursorToEntity(cursor: Cursor): Task{
             val itemId = cursor.getInt(cursor.getColumnIndexOrThrow(Task.COLUMN_ID))
             val title = cursor.getString(cursor.getColumnIndexOrThrow(Task.COLUMN_TITLE))
+            val description = cursor.getString(cursor.getColumnIndexOrThrow(Task.COLUMN_DESCRIPTION))
             val done = cursor.getInt(cursor.getColumnIndexOrThrow(Task.COLUMN_DONE)) !=0
+            val priority = cursor.getInt(cursor.getColumnIndexOrThrow(Task.COLUMN_PRIORITY)) !=0
+            val limitDate = cursor.getLongOrNull(cursor.getColumnIndexOrThrow(Task.COLUMN_LIMIT_DATE))
             val categoryId = cursor.getInt(cursor.getColumnIndexOrThrow(Task.COLUMN_CATEGORY_ID))
             val category = CategoryDAO(context).getById(categoryId)!!
-            return Task(itemId, title, done, category)
+            return Task(itemId, title,description, done, limitDate,priority,category)
     }
 
     fun insert(task: Task) {
