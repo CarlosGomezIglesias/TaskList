@@ -92,7 +92,6 @@ class TaskDetailActivity : AppCompatActivity() {
         binding.saveButton.setOnClickListener {
             task.title=binding.titleTextField.editText!!.text.toString()
             task.description=binding.descriptionTextField.editText!!.text.toString()
-            task.limitDate=binding.dateTextField.editText?.
             taskDAO.save(task)
             Snackbar.make(binding.root, "Tarea Guardada", Snackbar.LENGTH_SHORT).show()
             finish()
