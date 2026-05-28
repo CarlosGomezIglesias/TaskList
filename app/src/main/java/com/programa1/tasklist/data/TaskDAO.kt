@@ -183,4 +183,42 @@ class TaskDAO(val context: Context) {
         return getAllBy(null)
     }
 
+    fun countByCategory(category: Category): Int {
+        return countBy("${Task.COLUMN_CATEGORY_ID} = ${category.id}")
+    }
+
+    fun countByCategoryAndDone(category: Category, done: Boolean): Int {
+        return countBy("${Task.COLUMN_CATEGORY_ID} = ${category.id} AND ${Task.COLUMN_DONE} = $done")
+    }
+
+    fun countBy(where: String): Int {
+        open()
+
+        var count = 0
+
+        try {
+            val cursor = db.query(
+                Task.TABLE_NAME,
+                arrayOf("COUNT(*)"),
+                where,
+                null,
+                null,
+                null,
+                null
+            )
+
+            if (cursor.moveToNext()) {
+                count = cursor.getInt(0)
+
+            }
+            cursor.close()
+
+        } catch (e: Exception) {
+            e.printStackTrace()
+        } finally {
+            close()
+        }
+        return count
+    }
+
 }

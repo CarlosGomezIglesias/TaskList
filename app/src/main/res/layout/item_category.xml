@@ -15,7 +15,7 @@
 
         <LinearLayout
             android:layout_width="wrap_content"
-            android:layout_height="80dp"
+            android:layout_height="60dp"
             android:orientation="vertical"
             android:gravity="center">
 
@@ -33,12 +33,6 @@
                 android:textSize="16sp"
                 tools:text="Tareas" />
 
-            <TextView
-                android:id="@+id/limitDateTextView"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textSize="12sp"
-                tools:text="Fecha Limite" />
         </LinearLayout>
 
 <Space

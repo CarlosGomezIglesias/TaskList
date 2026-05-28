@@ -65,7 +65,7 @@ class TaskDetailActivity : AppCompatActivity() {
 
         binding.titleTextField.editText!!.setText(task.title)
         binding.descriptionTextField.editText!!.setText(task.description)
-        task.priority = binding.priorityCheckBox.isChecked
+        binding.priorityCheckBox.isChecked = task.priority
         if(task.limitDate != null){
 
             val calendar = Calendar.getInstance()
