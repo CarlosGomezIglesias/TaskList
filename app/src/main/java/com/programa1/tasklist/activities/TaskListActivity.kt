@@ -111,7 +111,8 @@ class TaskListActivity : AppCompatActivity() {
         task.done = !task.done
         taskDAO.update(task)
 
-        adapter.notifyItemChanged(position) //Obliga a actualizar el check antes de actualizar los datos
+        //Obliga a actualizar el check antes de actualizar los datos
+        adapter.notifyItemChanged(position)
 
         reloadData()
     }
@@ -141,7 +142,7 @@ class TaskListActivity : AppCompatActivity() {
             .create()
         dialog.show()
     }
-
+    //funcion que añade los gestos de barrer a un lado y otro
     fun configureGestures(){
         val gestures = ItemTouchHelper(
             object : ItemTouchHelper.SimpleCallback(ItemTouchHelper.ACTION_STATE_IDLE,

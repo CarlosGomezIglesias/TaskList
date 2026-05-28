@@ -1,12 +1,14 @@
 package com.programa1.tasklist.adapters
 
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.programa1.tasklist.adapters.utils.TaskDiffUtils
 import com.programa1.tasklist.data.Task
 import com.programa1.tasklist.databinding.ItemTaskBinding
+import java.util.Calendar
 
 
 class TaskAdapter(
@@ -25,6 +27,22 @@ class TaskAdapter(
         override fun onBindViewHolder(holder: TaskViewHolder, position: Int) {
             val task = items[position]
             holder.render(task)
+            if(task.limitDate != null){
+
+                val calendar = Calendar.getInstance()
+                calendar.timeInMillis = task.limitDate!!
+
+                val day = calendar.get(Calendar.DAY_OF_MONTH)
+                val month = calendar.get(Calendar.MONTH) + 1
+                val year = calendar.get(Calendar.YEAR)
+
+                val fechaTexto = "$day/$month/$year"
+
+                holder.binding.limitDateTextView.text = fechaTexto
+
+            }else{
+                holder.binding.limitDateTextView.text = "Sin fecha"
+            }
             holder.itemView.setOnClickListener {
                 onClick(holder.absoluteAdapterPosition)
             }
@@ -45,6 +63,7 @@ class TaskAdapter(
             }
 
 
+
         }
 
         override fun getItemCount(): Int = items.size
@@ -61,6 +80,12 @@ class TaskAdapter(
         fun render(task: Task) {
             binding.doneCheckBox.isChecked=task.done
             binding.titleTextView.text = task.title
+            if(task.priority){
+                binding.priorityImage.visibility = View.VISIBLE
+            }else{
+                binding.priorityImage.visibility = View.GONE
+            }
+
         }
 
     }

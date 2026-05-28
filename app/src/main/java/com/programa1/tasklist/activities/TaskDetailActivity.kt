@@ -65,9 +65,24 @@ class TaskDetailActivity : AppCompatActivity() {
 
         binding.titleTextField.editText!!.setText(task.title)
         binding.descriptionTextField.editText!!.setText(task.description)
+        task.priority = binding.priorityCheckBox.isChecked
+        if(task.limitDate != null){
+
+            val calendar = Calendar.getInstance()
+            calendar.timeInMillis = task.limitDate!!
+
+            val day = calendar.get(Calendar.DAY_OF_MONTH)
+            val month = calendar.get(Calendar.MONTH) + 1
+            val year = calendar.get(Calendar.YEAR)
+
+            val fechaTexto = "$day/$month/$year"
+
+            binding.dateTextField.editText?.setText(fechaTexto)
+        }
         binding.dateTextField.editText?.setOnClickListener {
 
             val calendar = Calendar.getInstance()
+
             val year = calendar.get(Calendar.YEAR)
             val month = calendar.get(Calendar.MONTH)
             val day = calendar.get(Calendar.DAY_OF_MONTH)
@@ -76,7 +91,20 @@ class TaskDetailActivity : AppCompatActivity() {
                 this,
                 { _, selectedYear, selectedMonth, selectedDay ->
 
-                    val fecha = "$selectedDay/${selectedMonth + 1}/$selectedYear"
+                    val selectedCalendar = Calendar.getInstance()
+
+                    selectedCalendar.set(
+                        selectedYear,
+                        selectedMonth,
+                        selectedDay
+                    )
+
+                    // Guardar en milisegundos
+                    task.limitDate = selectedCalendar.timeInMillis
+
+                    // Mostrar texto bonito
+                    val fecha =
+                        "$selectedDay/${selectedMonth + 1}/$selectedYear"
 
                     binding.dateTextField.editText?.setText(fecha)
 
@@ -88,12 +116,43 @@ class TaskDetailActivity : AppCompatActivity() {
 
             datePicker.show()
         }
+        /*binding.dateTextField.editText?.setOnClickListener {
+
+            val selectedCalendar = Calendar.getInstance()
+
+            val selectedYear = selectedCalendar.get(Calendar.YEAR)
+            val selectedMonth = selectedCalendar.get(Calendar.MONTH)
+            val selectedDay = selectedCalendar.get(Calendar.DAY_OF_MONTH)
+
+            selectedCalendar.set(
+                selectedYear,
+                selectedMonth,
+                selectedDay
+            )
+
+            val datePicker = DatePickerDialog(
+                this,
+                { _, selectedYear, selectedMonth, selectedDay ->
+
+                    val fecha = "$selectedDay/${selectedMonth + 1}/$selectedYear"
+
+                    binding.dateTextField.editText?.setText(fecha)
+
+                },
+                selectedYear,
+                selectedMonth,
+                selectedDay
+            )
+
+            datePicker.show()
+        }*/
 
         binding.saveButton.setOnClickListener {
             task.title=binding.titleTextField.editText!!.text.toString()
             task.description=binding.descriptionTextField.editText!!.text.toString()
+            task.priority = binding.priorityCheckBox.isChecked
             taskDAO.save(task)
-            Snackbar.make(binding.root, "Tarea Guardada", Snackbar.LENGTH_SHORT).show()
+            Snackbar.make(binding.root, "Tarea Guardada", Snackbar.LENGTH_LONG).show()
             finish()
         }
     }

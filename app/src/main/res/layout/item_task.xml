@@ -9,10 +9,20 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="80dp"
         android:orientation="horizontal"
         android:paddingHorizontal="16dp"
         android:paddingVertical="8dp">
+        <LinearLayout
+            android:layout_width="60dp"
+            android:layout_height="match_parent">
+            <ImageView
+                android:id="@+id/priorityImage"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_priority"
+                android:scaleType="centerCrop"/>
+        </LinearLayout>
 
         <CheckBox
             android:id="@+id/doneCheckBox"
@@ -28,22 +38,30 @@
                 android:id="@+id/titleTextView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textSize="16sp"
+                android:textSize="20sp"
                 tools:text="Task" />
             <TextView
                 android:id="@+id/descriptionTextView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textSize="12sp"
+                android:textSize="16sp"
                 tools:text="Description" />
+            <TextView
+                android:id="@+id/limitDateTextView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="12sp"
+                tools:text="Fecha Limite" />
         </LinearLayout>
         <Space
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_weight="1"/>
         <LinearLayout
             android:layout_width="wrap_content"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:orientation="horizontal"
+            android:gravity="center">
 
             <Button
                 android:id="@+id/editButton"
