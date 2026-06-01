@@ -17,7 +17,7 @@
         android:id="@+id/titleTextField"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Que hay que hacer...">
+        android:hint="@string/hint_nameTask">
 
         <com.google.android.material.textfield.TextInputEditText
             android:layout_width="match_parent"
@@ -33,7 +33,7 @@
             android:id="@+id/descriptionTextField"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Descripción (opcional)">
+            android:hint="@string/hint_descriptionTask">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:layout_width="match_parent"
@@ -49,7 +49,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:endIconMode="clear_text"
-            android:hint="Fecha límite (opcional)">
+            android:hint="@string/hint_limitDate">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:layout_width="match_parent"
@@ -62,12 +62,12 @@
             android:id="@+id/priorityCheckBox"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Urgente"/>
+            android:text="@string/urgent"/>
         <Button
             android:id="@+id/saveButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Guardar tarea"
+            android:text="@string/saveTask_button"
             android:layout_gravity="center_horizontal"
             android:layout_marginTop="8dp"/>
 
