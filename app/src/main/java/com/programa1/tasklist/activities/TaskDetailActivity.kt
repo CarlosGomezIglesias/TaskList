@@ -57,11 +57,11 @@ class TaskDetailActivity : AppCompatActivity() {
         category=categoryDAO.getById(categoryId)
         if(taskId!=-1){
             task= taskDAO.getById(taskId)!!
-            supportActionBar?.title="Editar tarea"
+            supportActionBar?.title=getString(R.string.alertDialog_title_editTask)
         }else{
             val position = taskDAO.countByCategory(category!!)
             task= Task(-1,"", "",false,null ,false, position, category!!)
-            supportActionBar?.title="Crear tarea"
+            supportActionBar?.title=getString(R.string.alertDialog_title_createTask)
         }
 
         binding.titleTextField.editText!!.setText(task.title)
@@ -127,7 +127,7 @@ class TaskDetailActivity : AppCompatActivity() {
             task.description=binding.descriptionTextField.editText!!.text.toString()
             task.priority = binding.priorityCheckBox.isChecked
             taskDAO.save(task)
-            Snackbar.make(binding.root, "Tarea Guardada", Snackbar.LENGTH_LONG).show()
+            Snackbar.make(binding.root, getString(R.string.snackBar_saveTask), Snackbar.LENGTH_LONG).show()
             finish()
         }
     }

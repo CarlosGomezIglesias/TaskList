@@ -7,7 +7,6 @@ import android.view.Menu
 import android.view.MenuItem
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.widget.SearchView
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.recyclerview.widget.ItemTouchHelper
@@ -142,13 +141,13 @@ class TaskListActivity : AppCompatActivity() {
         //Patron Builder (evita tener que llamar al objeto cada vez que se hace .setX)
         val dialog = MaterialAlertDialogBuilder(this)
             .setIcon(R.drawable.ic_delete)
-            .setTitle("Borrar tarea")
-            .setMessage("¿Esta seguro que quiere borrar la tarea \"${task.title}\"?")
-            .setPositiveButton("Si") { dialog, which ->
+            .setTitle(getString(R.string.alertDialog_title_deleteTask))
+            .setMessage(getString(R.string.alertDialog_message_deleteTask,task.title))
+            .setPositiveButton(getString(R.string.alertDialog_positiveButton_delete)) { dialog, which ->
                 taskDAO.delete(task)
                 reloadData()
             }
-            .setNegativeButton("No") { dialog, which ->
+            .setNegativeButton(getString(R.string.alertDialog_negativeButton)) { dialog, which ->
                 adapter.notifyItemChanged(position)
             }
             .setCancelable(false)
@@ -191,14 +190,14 @@ class TaskListActivity : AppCompatActivity() {
                     RecyclerViewSwipeDecorator.Builder(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive)
 
                         // Swipe left action
-                        .addSwipeLeftLabel("BORRAR")
+                        .addSwipeLeftLabel(getString(R.string.swipeleft_delete))
                         .setSwipeLeftLabelColor(whiteColor)
                         .addSwipeLeftActionIcon(R.drawable.ic_delete)
                         //.setSwipeLeftActionIconTint(whiteColor) Sobreescribe el color del icono si tiene
                         .addSwipeLeftBackgroundColor(getColor(R.color.red))
 
                         // Swipe right action
-                        .addSwipeRightLabel("EDITAR")
+                        .addSwipeRightLabel(getString(R.string.swiperight_edit))
                         .setSwipeRightLabelColor(whiteColor)
                         .addSwipeRightActionIcon(R.drawable.ic_edit)
                         //.setSwipeRightActionIconTint(whiteColor) Sobreescribe el color del icono si tiene

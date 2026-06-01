@@ -13,7 +13,6 @@ import com.programa1.tasklist.R
 import com.programa1.tasklist.adapters.CategoryAdapter
 import com.programa1.tasklist.data.Category
 import com.programa1.tasklist.data.CategoryDAO
-import com.programa1.tasklist.data.TaskDAO
 import com.programa1.tasklist.databinding.ActivityCategoryListBinding
 import com.programa1.tasklist.databinding.DialogCreateCategoryBinding
 
@@ -79,19 +78,19 @@ class CategoryListActivity : AppCompatActivity() {
 
         val isEditing = category.id != -1
 
-        var title = "Crear categoria"
+        var title = getString(R.string.alertDialog_title_createCategory)
 
         var icon = R.drawable.ic_add_category
 
         //Al pulsar en crear o editar categoria distingue cual es la opcion elegida
         if (isEditing) {
-            title = "Editar categoria"
+            title = getString(R.string.alertDialog_title_editCategory)
             icon = R.drawable.ic_edit
         }
         dialogBinding.textField.editText!!.setText(category.name)
         dialogBinding.textField.editText!!.addTextChangedListener { //Si esta el nombre en blanco avisa
             if (dialogBinding.textField.editText!!.text.trim().isEmpty()) {
-                dialogBinding.textField.error = "El nombre no puede estar vacio"
+                dialogBinding.textField.error = getString(R.string.error_texField)
             } else {
                 dialogBinding.textField.error = null
             }
@@ -101,8 +100,8 @@ class CategoryListActivity : AppCompatActivity() {
             .setIcon(icon)
             .setTitle(title)
             .setView(dialogBinding.root)
-            .setPositiveButton("Guardar", null)
-            .setNegativeButton("No", null)
+            .setPositiveButton(getString(R.string.alertDialog_positiveButton_create_edit), null)
+            .setNegativeButton(getString(R.string.alertDialog_negativeButton), null)
             .setCancelable(false)
             .create()
         dialog.show()
@@ -118,7 +117,7 @@ class CategoryListActivity : AppCompatActivity() {
         editText.addTextChangedListener {
             val text = it.toString().trim()
             if (text.isEmpty()) {
-                dialogBinding.textField.error = "El nombre no puede estar vacío"
+                dialogBinding.textField.error = getString(R.string.error_texField)
                 positiveButton.isEnabled = false
             } else {
                 dialogBinding.textField.error = null
@@ -168,14 +167,14 @@ class CategoryListActivity : AppCompatActivity() {
         //Patron Builder (evita tener que llamar al objeto cada vez que se hace .setX)
         val dialog = MaterialAlertDialogBuilder(this)
             .setIcon(R.drawable.ic_delete)
-            .setTitle("Borrar categoria")
-            .setMessage("¿Esta seguro que quiere borrar la categoria \"${category.name}\"?")
-            .setPositiveButton("Si") { dialog, which ->
+            .setTitle(getString(R.string.alertDialog_title_deleteCategory))
+            .setMessage(getString(R.string.alertDialog_message_deleteCategory, category.name))
+            .setPositiveButton(getString(R.string.alertDialog_positiveButton_delete)) { dialog, which ->
                 categoryDAO.delete(category)
                 categoryList = categoryDAO.getAll()
                 adapter.updateData(categoryList)
             }
-            .setNegativeButton("No") { dialog, which ->
+            .setNegativeButton(getString(R.string.alertDialog_negativeButton)) { dialog, which ->
 
             }
             .setCancelable(false)

@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">TaskFlow</string>
+    <string name="alertDialog_title_createCategory">Crear categoria</string>
+    <string name="alertDialog_title_editCategory">Editar categoria</string>
+    <string name="alertDialog_title_deleteCategory">Borrar categoria</string>
+    <string name="alertDialog_message_deleteCategory">¿Esta seguro que quiere borrar la categoria %1$s?</string>
+    <string name="alertDialog_positiveButton_delete">Si</string>
+    <string name="error_texField">El nombre no puede estar vacio</string>
+    <string name="alertDialog_positiveButton_create_edit">Guardar</string>
+    <string name="alertDialog_negativeButton">No</string>
+    <string name="alertDialog_title_deleteTask">Borrar tarea</string>
+    <string name="alertDialog_title_editTask">Editar tarea</string>
+    <string name="alertDialog_title_createTask">Crear tarea</string>
+    <string name="alertDialog_message_deleteTask">¿Esta seguro que quiere borrar la tarea %1$s?</string>
+    <string name="swipeleft_delete">Borrar</string>
+    <string name="swiperight_edit">Editar</string>
+    <string name="snackBar_saveTask">Tarea guardada</string>
+    <string name="quantity_task">%1$d tareas pendientes</string>
+    <string name="hint_nameTask">Que hacer...</string>
+    <string name="hint_descriptionTask">Descripcion (opcional)</string>
+    <string name="hint_limitDate">Fecha limite (opcional)</string>
+    <string name="urgent">Urgente</string>
+    <string name="saveTask_button">Guardar tarea</string>
+    <string name="hint_name">Nombre</string>
+</resources>
