@@ -59,7 +59,8 @@ class TaskDetailActivity : AppCompatActivity() {
             task= taskDAO.getById(taskId)!!
             supportActionBar?.title="Editar tarea"
         }else{
-            task= Task(-1,"", "",false,null ,false, category!!)
+            val position = taskDAO.countByCategory(category!!)
+            task= Task(-1,"", "",false,null ,false, position, category!!)
             supportActionBar?.title="Crear tarea"
         }
 
@@ -116,36 +117,10 @@ class TaskDetailActivity : AppCompatActivity() {
 
             datePicker.show()
         }
-        /*binding.dateTextField.editText?.setOnClickListener {
-
-            val selectedCalendar = Calendar.getInstance()
-
-            val selectedYear = selectedCalendar.get(Calendar.YEAR)
-            val selectedMonth = selectedCalendar.get(Calendar.MONTH)
-            val selectedDay = selectedCalendar.get(Calendar.DAY_OF_MONTH)
-
-            selectedCalendar.set(
-                selectedYear,
-                selectedMonth,
-                selectedDay
-            )
-
-            val datePicker = DatePickerDialog(
-                this,
-                { _, selectedYear, selectedMonth, selectedDay ->
-
-                    val fecha = "$selectedDay/${selectedMonth + 1}/$selectedYear"
-
-                    binding.dateTextField.editText?.setText(fecha)
-
-                },
-                selectedYear,
-                selectedMonth,
-                selectedDay
-            )
-
-            datePicker.show()
-        }*/
+        binding.dateTextField.setEndIconOnClickListener {
+            binding.dateTextField.editText?.setText("")
+            task.limitDate= null
+        }
 
         binding.saveButton.setOnClickListener {
             task.title=binding.titleTextField.editText!!.text.toString()

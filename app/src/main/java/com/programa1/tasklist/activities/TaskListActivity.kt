@@ -3,9 +3,11 @@ package com.programa1.tasklist.activities
 import android.content.Intent
 import android.graphics.Canvas
 import android.os.Bundle
+import android.view.Menu
 import android.view.MenuItem
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.SearchView
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.recyclerview.widget.ItemTouchHelper
@@ -19,6 +21,7 @@ import com.programa1.tasklist.data.Task
 import com.programa1.tasklist.data.TaskDAO
 import com.programa1.tasklist.databinding.ActivityTaskListBinding
 import it.xabaras.android.recyclerview.swipedecorator.RecyclerViewSwipeDecorator
+import java.util.Collections
 
 class TaskListActivity : AppCompatActivity() {
 
@@ -37,6 +40,8 @@ class TaskListActivity : AppCompatActivity() {
     var taskList: List<Task> = emptyList()
 
     var category: Category? = null
+
+    lateinit var hideMenuItem: Menu
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -83,6 +88,13 @@ class TaskListActivity : AppCompatActivity() {
         super.onResume()
         reloadData()
     }
+    /*override fun onCreateOptionsMenu(menu: Menu): Boolean {
+        menuInflater.inflate(R.menu.activity_task_list_menu, menu)
+        hideMenuItem = menu.findItem(R.id.menu_hide)
+
+        setFavoriteIcon()
+        return true
+    }*/
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when(item.itemId) {
@@ -90,6 +102,7 @@ class TaskListActivity : AppCompatActivity() {
                 finish()
                 true
             }
+
             else -> super.onOptionsItemSelected(item)
         }
     }
@@ -145,13 +158,16 @@ class TaskListActivity : AppCompatActivity() {
     //funcion que añade los gestos de barrer a un lado y otro
     fun configureGestures(){
         val gestures = ItemTouchHelper(
-            object : ItemTouchHelper.SimpleCallback(ItemTouchHelper.ACTION_STATE_IDLE,
+            object : ItemTouchHelper.SimpleCallback(ItemTouchHelper.UP or ItemTouchHelper.DOWN,
                 ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT){
                 override fun onMove(
                     recyclerView: RecyclerView,
                     viewHolder: RecyclerView.ViewHolder,
                     target: RecyclerView.ViewHolder
                 ): Boolean {
+                    val fromPosition = viewHolder.bindingAdapterPosition
+                    val toPosition = target.bindingAdapterPosition
+                    swapCategoryPositions(fromPosition,toPosition )
                     adapter.notifyItemMoved(viewHolder.bindingAdapterPosition, target.bindingAdapterPosition)
                     return false
                 }
@@ -199,5 +215,16 @@ class TaskListActivity : AppCompatActivity() {
             }
         )
         gestures.attachToRecyclerView(binding.recyclerView)
+    }
+    private fun swapCategoryPositions(position1: Int, position2: Int){
+        val task1 = taskList[position1]
+        val task2 = taskList[position2]
+        task1.position = position2
+        task2.position = position1
+        taskDAO.update(task1)
+        taskDAO.update(task2)
+        Collections.swap(taskList, position1, position2)
+
+
     }
 }

@@ -4,6 +4,10 @@ data class Category(
     val id : Int,
     var name: String
 ){
+    var pendingTasks = 0
+    var numberOfTasksDone = 0
+    var numberOfTasksTotal = 0
+
     companion object {
         const val TABLE_NAME="categories"
         const val COLUMN_ID="id"

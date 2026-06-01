@@ -13,6 +13,7 @@ import com.programa1.tasklist.R
 import com.programa1.tasklist.adapters.CategoryAdapter
 import com.programa1.tasklist.data.Category
 import com.programa1.tasklist.data.CategoryDAO
+import com.programa1.tasklist.data.TaskDAO
 import com.programa1.tasklist.databinding.ActivityCategoryListBinding
 import com.programa1.tasklist.databinding.DialogCreateCategoryBinding
 
@@ -43,7 +44,17 @@ class CategoryListActivity : AppCompatActivity() {
             categoryDAO.insert(category)
         }*/
 
-        categoryList = categoryDAO.getAll()
+        //categoryList = categoryDAO.getAll() // Hacemos la select en el onResume
+
+        /*var taskDAO = TaskDAO(this)
+        categoryList.forEach { c ->
+            var taskList = taskDAO.getAllByCategory(c)
+            for (i in taskList.indices) {
+                var t = taskList[i]
+                t.position = i
+                taskDAO.update(t)
+            }
+        }*/
 
         adapter = CategoryAdapter(categoryList, ::showCategory, ::editCategory, ::deleteCategory)
 
@@ -54,6 +65,12 @@ class CategoryListActivity : AppCompatActivity() {
             showCategoryDialog(Category(-1, ""))
         }
 
+    }
+
+    override fun onResume() {
+        super.onResume()
+        categoryList = categoryDAO.getAll()
+        adapter.updateData(categoryList)
     }
 
     fun showCategoryDialog(category: Category) {

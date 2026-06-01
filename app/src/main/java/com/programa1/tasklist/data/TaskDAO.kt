@@ -35,6 +35,7 @@ class TaskDAO(val context: Context) {
         values.put(Task.COLUMN_DONE, task.done)
         values.put(Task.COLUMN_PRIORITY, task.priority)
         values.put(Task.COLUMN_LIMIT_DATE, task.limitDate)
+        values.put(Task.COLUMN_POSITION, task.position)
         values.put(Task.COLUMN_CATEGORY_ID, task.category.id)
         return values
     }
@@ -46,9 +47,10 @@ class TaskDAO(val context: Context) {
             val done = cursor.getInt(cursor.getColumnIndexOrThrow(Task.COLUMN_DONE)) !=0
             val priority = cursor.getInt(cursor.getColumnIndexOrThrow(Task.COLUMN_PRIORITY)) !=0
             val limitDate = cursor.getLongOrNull(cursor.getColumnIndexOrThrow(Task.COLUMN_LIMIT_DATE))
+            val position = cursor.getInt(cursor.getColumnIndexOrThrow(Task.COLUMN_POSITION))
             val categoryId = cursor.getInt(cursor.getColumnIndexOrThrow(Task.COLUMN_CATEGORY_ID))
             val category = CategoryDAO(context).getById(categoryId)!!
-            return Task(itemId, title,description, done, limitDate,priority,category)
+            return Task(itemId, title,description, done, limitDate,priority,position, category)
     }
 
     fun insert(task: Task) {
@@ -156,7 +158,7 @@ class TaskDAO(val context: Context) {
                 null,          // The values for the WHERE clause
                 null,                   // don't group the rows
                 null,                   // don't filter by row groups
-                Task.COLUMN_DONE               // The sort order
+                Task.COLUMN_POSITION               // The sort order
             )
 
             while (cursor.moveToNext()) {
@@ -220,5 +222,4 @@ class TaskDAO(val context: Context) {
         }
         return count
     }
-
 }

@@ -49,6 +49,7 @@ class CategoryAdapter(
     class CategoryViewHolder(val binding: ItemCategoryBinding): RecyclerView.ViewHolder(binding.root){
         fun render(category: Category) {
             binding.nameTextView.text = category.name
+            binding.quantityTextView.text = "${category.pendingTasks} pendientes"
         }
 
     }

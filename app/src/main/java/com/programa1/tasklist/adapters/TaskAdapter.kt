@@ -27,9 +27,9 @@ class TaskAdapter(
         override fun onBindViewHolder(holder: TaskViewHolder, position: Int) {
             val task = items[position]
             holder.render(task)
-            holder.itemView.setOnClickListener {
-                onClick(holder.absoluteAdapterPosition)
-            }
+           holder.itemView.setOnClickListener {
+               onEdit(holder.absoluteAdapterPosition)
+           }
             holder.binding.doneCheckBox.setOnCheckedChangeListener { button, bool ->
                 //solo accede al codigo si es el usuario el que a dado click
                 if (holder.binding.doneCheckBox.isPressed){
@@ -85,7 +85,7 @@ class TaskAdapter(
                 binding.limitDateTextView.text = fechaTexto
 
             }else{
-                binding.limitDateTextView.text = "Sin fecha"
+                binding.limitDateTextView.text = ""
             }
         }
 
