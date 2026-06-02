@@ -61,7 +61,7 @@ class TaskDAO(val context: Context) {
 
         try {
             val newRowId = db.insert(Task.TABLE_NAME, null, values)
-
+            task.id = newRowId.toInt()
         } catch (e: Exception) {
             e.printStackTrace()
         } finally {

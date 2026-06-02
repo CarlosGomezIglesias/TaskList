@@ -1,7 +1,7 @@
 package com.programa1.tasklist.data
 
 data class Task (
-    val id: Int,
+    var id: Int,
     var title: String,
     var description: String,
     var done: Boolean,

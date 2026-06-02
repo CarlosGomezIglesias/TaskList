@@ -1,7 +1,11 @@
 package com.programa1.tasklist.activities
 
+import android.app.AlarmManager
 import android.app.DatePickerDialog
+import android.app.PendingIntent
+import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.MenuItem
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
@@ -10,6 +14,7 @@ import androidx.core.view.WindowInsetsCompat
 import androidx.core.widget.addTextChangedListener
 import com.google.android.material.snackbar.Snackbar
 import com.programa1.tasklist.R
+import com.programa1.tasklist.Receivers.ReminderReceiver
 import com.programa1.tasklist.data.Category
 import com.programa1.tasklist.data.CategoryDAO
 import com.programa1.tasklist.data.Task
@@ -139,6 +144,9 @@ class TaskDetailActivity : AppCompatActivity() {
             task.priority = binding.priorityCheckBox.isChecked
             taskDAO.save(task)
             Snackbar.make(binding.root, getString(R.string.snackBar_saveTask), Snackbar.LENGTH_LONG).show()
+
+            scheduleAlarm(task)
+
             finish()
         }
     }
@@ -150,5 +158,51 @@ class TaskDetailActivity : AppCompatActivity() {
             }
             else -> super.onOptionsItemSelected(item)
         }
+    }
+    private fun scheduleAlarm(task: Task) {
+
+        Log.d("ALARM_TEST", "scheduleAlarm ejecutado")
+
+        val intent = Intent(this, ReminderReceiver::class.java).apply {
+            putExtra(ReminderReceiver.TASK_ID, task.id)
+        }
+
+        val pendingIntent = PendingIntent.getBroadcast(
+            this,
+            task.id,
+                intent,
+            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+        )
+
+        val alarmManager = getSystemService(ALARM_SERVICE) as AlarmManager
+
+        val triggerTime = getReminderTime(task.limitDate!!, 1)
+
+        // 🔥 IMPORTANTE: usa exacta para pruebas
+        //if (alarmManager.canScheduleExactAlarms()) {
+            alarmManager.setExactAndAllowWhileIdle(
+                AlarmManager.RTC_WAKEUP,
+                triggerTime,
+                pendingIntent
+            )
+        //}
+        Log.d("ALARM_TEST", "limitDate = ${task.limitDate}")
+        Log.d("ALARM_TEST", "triggerTime = $triggerTime")
+    }
+    private fun getReminderTime(limitDate: Long, daysBefore: Int = 1): Long {
+
+        val calendar = Calendar.getInstance()
+        calendar.timeInMillis = limitDate
+
+        // Restar días
+        calendar.add(Calendar.DAY_OF_YEAR, -daysBefore)
+
+        // Fijar hora a las 09:00
+        calendar.set(Calendar.HOUR_OF_DAY, 9)
+        calendar.set(Calendar.MINUTE, 0)
+        calendar.set(Calendar.SECOND, 0)
+        calendar.set(Calendar.MILLISECOND, 0)
+
+        return calendar.timeInMillis
     }
 }

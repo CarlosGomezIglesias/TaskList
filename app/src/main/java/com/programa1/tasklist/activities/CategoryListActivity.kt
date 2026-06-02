@@ -1,5 +1,7 @@
 package com.programa1.tasklist.activities
 
+import android.app.NotificationChannel
+import android.app.NotificationManager
 import android.content.Intent
 import android.os.Bundle
 import androidx.activity.enableEdgeToEdge
@@ -63,6 +65,7 @@ class CategoryListActivity : AppCompatActivity() {
             //Navegar a una alerta de crear
             showCategoryDialog(Category(-1, ""))
         }
+        createNotificationChannel()
 
     }
 
@@ -182,6 +185,20 @@ class CategoryListActivity : AppCompatActivity() {
         dialog.show()
 
 
+    }
+    private fun createNotificationChannel() {
+
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+
+            val channel = NotificationChannel(
+                "task_channel",
+                "Recordatorios de tareas",
+                NotificationManager.IMPORTANCE_HIGH
+            )
+
+            val manager = getSystemService(NotificationManager::class.java)
+            manager.createNotificationChannel(channel)
+        }
     }
 
 }
