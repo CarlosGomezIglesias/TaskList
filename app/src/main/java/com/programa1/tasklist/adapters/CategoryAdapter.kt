@@ -3,6 +3,7 @@ package com.programa1.tasklist.adapters
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.programa1.tasklist.R
 import com.programa1.tasklist.data.Category
 import com.programa1.tasklist.databinding.ItemCategoryBinding
 
@@ -49,7 +50,7 @@ class CategoryAdapter(
     class CategoryViewHolder(val binding: ItemCategoryBinding): RecyclerView.ViewHolder(binding.root){
         fun render(category: Category) {
             binding.nameTextView.text = category.name
-            binding.quantityTextView.text = "${category.pendingTasks} pendientes"
+            binding.quantityTextView.text = itemView.context.getString(R.string.quantity_task, category.pendingTasks)
         }
 
     }

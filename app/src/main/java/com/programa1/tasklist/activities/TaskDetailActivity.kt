@@ -7,6 +7,7 @@ import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.core.widget.addTextChangedListener
 import com.google.android.material.snackbar.Snackbar
 import com.programa1.tasklist.R
 import com.programa1.tasklist.data.Category
@@ -65,6 +66,16 @@ class TaskDetailActivity : AppCompatActivity() {
         }
 
         binding.titleTextField.editText!!.setText(task.title)
+        binding.titleTextField.editText!!.addTextChangedListener {
+            //Si esta el nombre en blanco avisa
+            if (binding.titleTextField.editText!!.text.trim().isEmpty()) {
+                binding.titleTextField.error = getString(R.string.error_texField)
+                binding.saveButton.isEnabled = false
+            } else {
+                binding.titleTextField.error = null
+                binding.saveButton.isEnabled = true
+            }
+        }
         binding.descriptionTextField.editText!!.setText(task.description)
         binding.priorityCheckBox.isChecked = task.priority
         if(task.limitDate != null){
