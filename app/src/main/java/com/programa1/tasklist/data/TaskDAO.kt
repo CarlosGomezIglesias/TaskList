@@ -36,6 +36,7 @@ class TaskDAO(val context: Context) {
         values.put(Task.COLUMN_PRIORITY, task.priority)
         values.put(Task.COLUMN_LIMIT_DATE, task.limitDate)
         values.put(Task.COLUMN_POSITION, task.position)
+        values.put(Task.COLUMN_NOTIFICATION, task.notification)
         values.put(Task.COLUMN_CATEGORY_ID, task.category.id)
         return values
     }
@@ -48,9 +49,10 @@ class TaskDAO(val context: Context) {
             val priority = cursor.getInt(cursor.getColumnIndexOrThrow(Task.COLUMN_PRIORITY)) !=0
             val limitDate = cursor.getLongOrNull(cursor.getColumnIndexOrThrow(Task.COLUMN_LIMIT_DATE))
             val position = cursor.getInt(cursor.getColumnIndexOrThrow(Task.COLUMN_POSITION))
+            val notification = cursor.getInt(cursor.getColumnIndexOrThrow(Task.COLUMN_NOTIFICATION)) !=0
             val categoryId = cursor.getInt(cursor.getColumnIndexOrThrow(Task.COLUMN_CATEGORY_ID))
             val category = CategoryDAO(context).getById(categoryId)!!
-            return Task(itemId, title,description, done, limitDate,priority,position, category)
+            return Task(itemId, title,description, done, limitDate,priority,position, notification,category)
     }
 
     fun insert(task: Task) {

@@ -66,7 +66,7 @@ class TaskDetailActivity : AppCompatActivity() {
             supportActionBar?.title=getString(R.string.alertDialog_title_editTask)
         }else{
             val position = taskDAO.countByCategory(category!!)
-            task= Task(-1,"", "",false,null ,false, position, category!!)
+            task= Task(-1,"", "",false,null ,false, position, false,category!!)
             supportActionBar?.title=getString(R.string.alertDialog_title_createTask)
         }
 
@@ -83,6 +83,12 @@ class TaskDetailActivity : AppCompatActivity() {
         }
         binding.descriptionTextField.editText!!.setText(task.description)
         binding.priorityCheckBox.isChecked = task.priority
+        binding.notificationCheckBox.isChecked = task.notification
+       /* if(task.notification != true){
+            binding.menuReminder.visibility
+
+        }*/
+
         if(task.limitDate != null){
 
             val calendar = Calendar.getInstance()

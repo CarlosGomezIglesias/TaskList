@@ -20,6 +20,7 @@ class TaskDiffUtils(val oldList: List<Task>, val newList: List<Task>) : DiffUtil
             oldList[oldItemPosition].priority != newList[newItemPosition].priority -> false
             oldList[oldItemPosition].done != newList[newItemPosition].done -> false
             oldList[oldItemPosition].limitDate != newList[newItemPosition].limitDate -> false
+            oldList[oldItemPosition].notification != newList[newItemPosition].notification -> false
             oldList[oldItemPosition].category.id != newList[newItemPosition].category.id -> false
             else -> true
         }
