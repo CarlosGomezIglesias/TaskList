@@ -24,7 +24,7 @@
     <string name="urgent">Urgent</string>
     <string name="saveTask_button">Save task</string>
     <string name="hint_name">Name</string>
-    <string name="hint_menu_reminder">Notification</string>
+    <string name="hint_menu_reminder">Select period</string>
     <string name="reminder_checkBox">Reminder</string>
     <string name="notification_title">Reminder</string>
 

@@ -23,7 +23,7 @@
     <string name="urgent">Urgente</string>
     <string name="saveTask_button">Guardar tarea</string>
     <string name="hint_name">Nombre</string>
-    <string name="hint_menu_reminder">Notificacion</string>
+    <string name="hint_menu_reminder">Seleccionar periodo</string>
     <string name="reminder_checkBox">Recordatorio</string>
     <string name="notification_title">Recordatorio</string>
 </resources>

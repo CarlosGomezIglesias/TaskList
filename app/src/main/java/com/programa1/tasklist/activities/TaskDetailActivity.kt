@@ -7,6 +7,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.MenuItem
+import android.view.View
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
@@ -84,10 +85,12 @@ class TaskDetailActivity : AppCompatActivity() {
         binding.descriptionTextField.editText!!.setText(task.description)
         binding.priorityCheckBox.isChecked = task.priority
         binding.notificationCheckBox.isChecked = task.notification
-       /* if(task.notification != true){
-            binding.menuReminder.visibility
-
-        }*/
+        binding.menuReminder.visibility =
+            if (task.notification == true) View.VISIBLE else View.GONE
+        binding.notificationCheckBox.setOnCheckedChangeListener { _, isChecked ->
+            binding.menuReminder.visibility =
+                if (isChecked) View.VISIBLE else View.GONE
+        }
 
         if(task.limitDate != null){
 
@@ -148,6 +151,7 @@ class TaskDetailActivity : AppCompatActivity() {
             task.title=binding.titleTextField.editText!!.text.toString()
             task.description=binding.descriptionTextField.editText!!.text.toString()
             task.priority = binding.priorityCheckBox.isChecked
+            task.notification = binding.notificationCheckBox.isChecked
             taskDAO.save(task)
             Snackbar.make(binding.root, getString(R.string.snackBar_saveTask), Snackbar.LENGTH_LONG).show()
 
