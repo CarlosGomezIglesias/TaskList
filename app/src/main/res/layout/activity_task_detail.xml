@@ -61,7 +61,7 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
+            android:orientation="vertical">
 
             <CheckBox
                 android:id="@+id/priorityCheckBox"
@@ -77,25 +77,46 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/reminder_checkBox"/>
-
-            <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/menuReminder"
-                style="?attr/materialButtonOutlinedStyle"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:hint="@string/hint_menu_reminder">
-
-                <AutoCompleteTextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:inputType="none"
-                    style="@style/Widget.Material3.TextInputLayout.OutlinedBox.ExposedDropdownMenu" />
-                   <!-- app:simpleItems="@array/simple_items"-->
-
-
-            </com.google.android.material.textfield.TextInputLayout>
         </LinearLayout>
+        <LinearLayout
+            android:id="@+id/reminderInfoLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="36dp"
+            android:layout_marginTop="8dp"
+            android:orientation="vertical"
+            android:visibility="gone">
+
+            <TextView
+                android:id="@+id/reminderDateText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:drawableStart="@android:drawable/ic_menu_my_calendar"
+                android:drawablePadding="16dp"
+                android:layout_gravity="start"
+                android:text="06/07/2026"
+                android:textSize="16sp"/>
+
+            <TextView
+                android:id="@+id/reminderTimeText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:drawableStart="@android:drawable/ic_lock_idle_alarm"
+                android:drawablePadding="32dp"
+                android:text="18:30"
+                android:textSize="16sp"/>
+            <TextView
+                android:id="@+id/removeReminder"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="Eliminar recordatorio"
+                android:textColor="?attr/colorError"
+                android:textStyle="bold"/>
+
+        </LinearLayout>
+
 
         <Button
             android:id="@+id/saveButton"

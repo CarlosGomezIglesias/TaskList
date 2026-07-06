@@ -22,6 +22,9 @@ import com.programa1.tasklist.data.Task
 import com.programa1.tasklist.data.TaskDAO
 import com.programa1.tasklist.databinding.ActivityTaskDetailBinding
 import java.util.Calendar
+import android.app.TimePickerDialog
+import android.widget.Toast
+import com.programa1.tasklist.utils.ReminderScheduler
 
 class TaskDetailActivity : AppCompatActivity() {
 
@@ -67,7 +70,7 @@ class TaskDetailActivity : AppCompatActivity() {
             supportActionBar?.title=getString(R.string.alertDialog_title_editTask)
         }else{
             val position = taskDAO.countByCategory(category!!)
-            task= Task(-1,"", "",false,null ,false, position, false,category!!)
+            task= Task(-1,"", "",false,null ,false, position, false,null,category!!)
             supportActionBar?.title=getString(R.string.alertDialog_title_createTask)
         }
 
@@ -82,14 +85,33 @@ class TaskDetailActivity : AppCompatActivity() {
                 binding.saveButton.isEnabled = true
             }
         }
+
+
         binding.descriptionTextField.editText!!.setText(task.description)
         binding.priorityCheckBox.isChecked = task.priority
+
         binding.notificationCheckBox.isChecked = task.notification
-        binding.menuReminder.visibility =
-            if (task.notification == true) View.VISIBLE else View.GONE
+
+        updateReminderUI()
+
         binding.notificationCheckBox.setOnCheckedChangeListener { _, isChecked ->
-            binding.menuReminder.visibility =
-                if (isChecked) View.VISIBLE else View.GONE
+
+            task.notification = isChecked
+
+            if (isChecked) {
+                showReminderDatePicker()
+            } else {
+
+                if (task.id != -1) {
+                    ReminderScheduler.cancel(this, task)
+                }
+
+                task.notificationDate = null
+                updateReminderUI()
+            }
+        }
+        binding.reminderInfoLayout.setOnClickListener {
+            showReminderDatePicker()
         }
 
         if(task.limitDate != null){
@@ -146,6 +168,19 @@ class TaskDetailActivity : AppCompatActivity() {
             binding.dateTextField.editText?.setText("")
             task.limitDate= null
         }
+        binding.removeReminder.setOnClickListener {
+
+            task.notification = false
+            task.notificationDate = null
+
+            binding.notificationCheckBox.isChecked = false
+
+            if (task.id != -1) {
+                ReminderScheduler.cancel(this, task)
+            }
+
+            updateReminderUI()
+        }
 
         binding.saveButton.setOnClickListener {
             task.title=binding.titleTextField.editText!!.text.toString()
@@ -155,7 +190,11 @@ class TaskDetailActivity : AppCompatActivity() {
             taskDAO.save(task)
             Snackbar.make(binding.root, getString(R.string.snackBar_saveTask), Snackbar.LENGTH_LONG).show()
 
-            scheduleAlarm(task)
+            if (task.notification && task.notificationDate != null) {
+                ReminderScheduler.schedule(this, task)
+            } else {
+                ReminderScheduler.cancel(this, task)
+            }
 
             finish()
         }
@@ -169,50 +208,79 @@ class TaskDetailActivity : AppCompatActivity() {
             else -> super.onOptionsItemSelected(item)
         }
     }
-    private fun scheduleAlarm(task: Task) {
 
-        Log.d("ALARM_TEST", "scheduleAlarm ejecutado")
 
-        val intent = Intent(this, ReminderReceiver::class.java).apply {
-            putExtra(ReminderReceiver.TASK_ID, task.id)
+    private fun updateReminderUI() {
+
+        if (!task.notification || task.notificationDate == null) {
+
+            binding.reminderInfoLayout.visibility = View.GONE
+            return
         }
 
-        val pendingIntent = PendingIntent.getBroadcast(
-            this,
-            task.id,
-                intent,
-            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
-        )
-
-        val alarmManager = getSystemService(ALARM_SERVICE) as AlarmManager
-
-        val triggerTime = getReminderTime(task.limitDate!!, 1)
-
-        // 🔥 IMPORTANTE: usa exacta para pruebas
-        //if (alarmManager.canScheduleExactAlarms()) {
-            alarmManager.setExactAndAllowWhileIdle(
-                AlarmManager.RTC_WAKEUP,
-                triggerTime,
-                pendingIntent
-            )
-        //}
-        Log.d("ALARM_TEST", "limitDate = ${task.limitDate}")
-        Log.d("ALARM_TEST", "triggerTime = $triggerTime")
-    }
-    private fun getReminderTime(limitDate: Long, daysBefore: Int = 1): Long {
+        binding.reminderInfoLayout.visibility = View.VISIBLE
 
         val calendar = Calendar.getInstance()
-        calendar.timeInMillis = limitDate
+        calendar.timeInMillis = task.notificationDate!!
 
-        // Restar días
-        calendar.add(Calendar.DAY_OF_YEAR, -daysBefore)
+        val day = calendar.get(Calendar.DAY_OF_MONTH)
+        val month = calendar.get(Calendar.MONTH) + 1
+        val year = calendar.get(Calendar.YEAR)
 
-        // Fijar hora a las 09:00
-        calendar.set(Calendar.HOUR_OF_DAY, 9)
-        calendar.set(Calendar.MINUTE, 0)
-        calendar.set(Calendar.SECOND, 0)
-        calendar.set(Calendar.MILLISECOND, 0)
+        val hour = calendar.get(Calendar.HOUR_OF_DAY)
+        val minute = calendar.get(Calendar.MINUTE)
 
-        return calendar.timeInMillis
+        binding.reminderDateText.text = "%02d/%02d/%04d".format(day, month, year)
+        binding.reminderTimeText.text = "%02d:%02d".format(hour, minute)
     }
+    private fun showReminderDatePicker() {
+
+        val calendar = Calendar.getInstance()
+
+        DatePickerDialog(
+            this,
+            { _, year, month, day ->
+
+                calendar.set(Calendar.YEAR, year)
+                calendar.set(Calendar.MONTH, month)
+                calendar.set(Calendar.DAY_OF_MONTH, day)
+
+                showReminderTimePicker(calendar)
+
+            },
+            calendar.get(Calendar.YEAR),
+            calendar.get(Calendar.MONTH),
+            calendar.get(Calendar.DAY_OF_MONTH)
+        ).show()
+    }
+    private fun showReminderTimePicker(calendar: Calendar) {
+
+        TimePickerDialog(
+            this,
+            { _, hour, minute ->
+
+                calendar.set(Calendar.HOUR_OF_DAY, hour)
+                calendar.set(Calendar.MINUTE, minute)
+                calendar.set(Calendar.SECOND, 0)
+                calendar.set(Calendar.MILLISECOND, 0)
+
+                task.notificationDate = calendar.timeInMillis
+
+                Log.d("ALARM_TEST", "notificationDate guardada = ${task.notificationDate}")
+
+                updateReminderUI()
+
+                Toast.makeText(
+                    this,
+                    "Recordatorio: ${calendar.time}",
+                    Toast.LENGTH_LONG
+                ).show()
+
+            },
+            calendar.get(Calendar.HOUR_OF_DAY),
+            calendar.get(Calendar.MINUTE),
+            true
+        ).show()
+    }
+
 }

@@ -20,7 +20,7 @@ class ReminderReceiver : BroadcastReceiver() {
 
 
         val id = intent.getIntExtra(TASK_ID, -1)
-        val task = TaskDAO(context).getById(id)
+        val task = TaskDAO(context).getById(id) ?: return
 
         Log.i("ALARM_TEST", "Se ha recibido una alarma para la tarea ")
 
@@ -51,8 +51,16 @@ class ReminderReceiver : BroadcastReceiver() {
         // 2. Notificación
         val notification = NotificationCompat.Builder(context, "task_channel")
             .setSmallIcon(R.drawable.ic_notification)
-            .setContentTitle(context.getString(R.string.notification_title))
-            .setContentText(task.title)
+            .setContentTitle(task.title)
+            .setContentText(task.description.ifBlank {
+                context.getString(R.string.notification_title)
+            })
+            .setStyle(
+                NotificationCompat.BigTextStyle()
+                    .bigText(task.description.ifBlank {
+                        context.getString(R.string.notification_title)
+                    })
+            )
             .setContentIntent(pendingIntent)
             .setPriority(NotificationCompat.PRIORITY_HIGH)
             .setAutoCancel(true)

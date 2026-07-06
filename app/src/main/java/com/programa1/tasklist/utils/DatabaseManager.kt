@@ -20,33 +20,16 @@ class DatabaseManager (val context: Context) : SQLiteOpenHelper(context, DATABAS
         db.execSQL(Task.SQL_CREATE)
     }
     override fun onUpgrade(db: SQLiteDatabase, oldVersion: Int, newVersion: Int) {
-        /*onDestroy(db)
-        onCreate(db)*/
-        var version = oldVersion
-        if (version == 1) {
-            db.execSQL("ALTER TABLE ${Task.TABLE_NAME} ADD COLUMN ${Task.COLUMN_POSITION} INTEGER DEFAULT 0")
-            val categoryDAO = CategoryDAO(context)
-            val taskDAO = TaskDAO(context)
-            categoryDAO.getAll().forEach { c ->
-                val taskList = taskDAO.getAllByCategory(c)
-                for (i in taskList.indices) {
-                    var t = taskList[i]
-                    t.position = i
-                    taskDAO.update(t)
-                }
-            }
-            version = 2
-        }
-        if (version == 2) {
+        onDestroy(db)
+        onCreate(db)
 
-        }
     }
     fun onDestroy (db: SQLiteDatabase) {
         db.execSQL(Task.SQL_DELETE)
         db.execSQL(Category.SQL_DELETE)
     }
     companion object {
-        const val DATABASE_VERSION = 2
+        const val DATABASE_VERSION = 1
         const val DATABASE_NAME = "TaskList.db"
     }
 }

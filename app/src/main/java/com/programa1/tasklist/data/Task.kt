@@ -9,6 +9,7 @@ data class Task (
     var priority: Boolean,
     var position: Int,
     var notification: Boolean,
+    var notificationDate: Long?,
     val category: Category
 ){
     companion object {
@@ -21,6 +22,7 @@ data class Task (
         const val COLUMN_DESCRIPTION="description"
         const val COLUMN_POSITION="position"
         const val COLUMN_NOTIFICATION="notification"
+        const val COLUMN_NOTIFICATION_DATE = "notification_date"
         const val COLUMN_CATEGORY_ID="category_id"
 
         const val SQL_CREATE =
@@ -33,6 +35,7 @@ data class Task (
                     "$COLUMN_PRIORITY BOOLEAN,"+
                     "$COLUMN_POSITION INTEGER,"+
                     "$COLUMN_NOTIFICATION BOOLEAN,"+
+                    "$COLUMN_NOTIFICATION_DATE LONG,"+
                     "$COLUMN_CATEGORY_ID INTEGER " +
                     "REFERENCES ${Category.TABLE_NAME}(${Category.COLUMN_ID}) ON DELETE CASCADE)"
 
