@@ -19,9 +19,14 @@ import com.programa1.tasklist.databinding.ActivityCategoryListBinding
 import com.programa1.tasklist.databinding.DialogCreateCategoryBinding
 import android.Manifest
 import android.content.pm.PackageManager
+import android.graphics.Canvas
 import android.os.Build
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.recyclerview.widget.ItemTouchHelper
+import androidx.recyclerview.widget.RecyclerView
+import it.xabaras.android.recyclerview.swipedecorator.RecyclerViewSwipeDecorator
+import java.util.Collections
 
 class CategoryListActivity : AppCompatActivity() {
 
@@ -68,10 +73,11 @@ class CategoryListActivity : AppCompatActivity() {
 
         binding.addCategoryFAB.setOnClickListener {
             //Navegar a una alerta de crear
-            showCategoryDialog(Category(-1, ""))
+            showCategoryDialog(Category(-1, -1,""))
         }
         createNotificationChannel()
         requestNotificationPermission()
+        configureGestures()
 
 
     }
@@ -226,6 +232,77 @@ class CategoryListActivity : AppCompatActivity() {
             val manager = getSystemService(NotificationManager::class.java)
             manager.createNotificationChannel(channel)
         }
+    }
+    fun configureGestures(){
+        val gestures = ItemTouchHelper(
+            object : ItemTouchHelper.SimpleCallback(ItemTouchHelper.UP or ItemTouchHelper.DOWN,
+                ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT){
+                override fun onMove(
+                    recyclerView: RecyclerView,
+                    viewHolder: RecyclerView.ViewHolder,
+                    target: RecyclerView.ViewHolder
+                ): Boolean {
+                    val fromPosition = viewHolder.bindingAdapterPosition
+                    val toPosition = target.bindingAdapterPosition
+                    swapCategoryPositions(fromPosition,toPosition )
+                    adapter.notifyItemMoved(viewHolder.bindingAdapterPosition, target.bindingAdapterPosition)
+                    return false
+                }
+
+                override fun onSwiped(
+                    viewHolder: RecyclerView.ViewHolder,
+                    direction: Int
+                ) {
+                    if (direction== ItemTouchHelper.LEFT){
+                        deleteCategory(viewHolder.absoluteAdapterPosition)
+                    }else {
+                        editCategory(viewHolder.absoluteAdapterPosition)
+                    }
+                }
+                //Esto es para personalizar la fila cuando deslizo a derecha o izquierda
+                override fun onChildDraw(c: Canvas, recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder,
+                                         dX: Float, dY: Float, actionState: Int, isCurrentlyActive: Boolean) {
+
+                    val whiteColor = getColor(R.color.white)
+
+                    RecyclerViewSwipeDecorator.Builder(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive)
+
+                        // Swipe left action
+                        .addSwipeLeftLabel(getString(R.string.swipeleft_delete))
+                        .setSwipeLeftLabelColor(whiteColor)
+                        .addSwipeLeftActionIcon(R.drawable.ic_delete)
+                        //.setSwipeLeftActionIconTint(whiteColor) Sobreescribe el color del icono si tiene
+                        .addSwipeLeftBackgroundColor(getColor(R.color.red))
+
+                        // Swipe right action
+                        .addSwipeRightLabel(getString(R.string.swiperight_edit))
+                        .setSwipeRightLabelColor(whiteColor)
+                        .addSwipeRightActionIcon(R.drawable.ic_edit)
+                        //.setSwipeRightActionIconTint(whiteColor) Sobreescribe el color del icono si tiene
+                        .addSwipeRightBackgroundColor(getColor(R.color.green))
+
+                        // Build
+                        .create()
+                        .decorate()
+
+                    super.onChildDraw(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive)
+                }
+
+
+            }
+        )
+        gestures.attachToRecyclerView(binding.recyclerView)
+    }
+    private fun swapCategoryPositions(position1: Int, position2: Int){
+        val category1 = categoryList[position1]
+        val category2 = categoryList[position2]
+        category1.position = position2
+        category2.position = position1
+        categoryDAO.update(category1)
+        categoryDAO.update(category2)
+        Collections.swap(categoryList, position1, position2)
+
+
     }
 
 }

@@ -11,9 +11,17 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:paddingHorizontal="16dp"
+        android:paddingHorizontal="4dp"
         android:paddingVertical="8dp"
         android:gravity="center_vertical">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingHorizontal="8dp"
+            android:paddingVertical="8dp"
+            android:gravity="start">
 
         <ImageView
             android:id="@+id/priorityImage"
@@ -24,8 +32,10 @@
 
         <CheckBox
             android:id="@+id/doneCheckBox"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:layout_width="24dp"
+            android:layout_height="24dp"/>
+
+        </LinearLayout>
 
         <LinearLayout
             android:layout_width="0dp"

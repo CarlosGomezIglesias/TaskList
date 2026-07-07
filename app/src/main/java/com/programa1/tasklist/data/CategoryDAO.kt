@@ -30,16 +30,19 @@ class CategoryDAO(val context: Context) {
 
         val values = ContentValues()
         values.put(Category.COLUMN_NAME, category.name)
+        values.put(Category.COLUMN_POSITION, category.position)
         return values
     }
 
     fun cursorToEntity(cursor: Cursor): Category{
 
         val itemId = cursor.getInt(cursor.getColumnIndexOrThrow(Category.COLUMN_ID))
+        val position = cursor.getInt(cursor.getColumnIndexOrThrow(Category.COLUMN_POSITION))
         val title = cursor.getString(cursor.getColumnIndexOrThrow(Category.COLUMN_NAME))
 
 
-        val category = Category(itemId, title)
+
+        val category = Category(itemId,position, title)
         val taskDAO = TaskDAO(context)
         category.numberOfTasksTotal = taskDAO.countByCategory(category)
         category.numberOfTasksDone = taskDAO.countByCategoryAndDone(category, true)
