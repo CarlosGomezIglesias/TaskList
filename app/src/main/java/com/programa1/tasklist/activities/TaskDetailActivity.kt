@@ -237,7 +237,7 @@ class TaskDetailActivity : AppCompatActivity() {
 
         val calendar = Calendar.getInstance()
 
-        DatePickerDialog(
+        val dialog = DatePickerDialog(
             this,
             { _, year, month, day ->
 
@@ -251,11 +251,17 @@ class TaskDetailActivity : AppCompatActivity() {
             calendar.get(Calendar.YEAR),
             calendar.get(Calendar.MONTH),
             calendar.get(Calendar.DAY_OF_MONTH)
-        ).show()
+        )
+
+        dialog.setOnCancelListener {
+            binding.notificationCheckBox.isChecked = false
+        }
+
+        dialog.show()
     }
     private fun showReminderTimePicker(calendar: Calendar) {
 
-        TimePickerDialog(
+        val dialog = TimePickerDialog(
             this,
             { _, hour, minute ->
 
@@ -280,7 +286,13 @@ class TaskDetailActivity : AppCompatActivity() {
             calendar.get(Calendar.HOUR_OF_DAY),
             calendar.get(Calendar.MINUTE),
             true
-        ).show()
+        )
+
+        dialog.setOnCancelListener {
+            binding.notificationCheckBox.isChecked = false
+        }
+
+        dialog.show()
     }
 
 }
