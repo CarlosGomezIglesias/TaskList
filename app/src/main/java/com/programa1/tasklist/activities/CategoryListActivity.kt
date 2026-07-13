@@ -195,6 +195,8 @@ class CategoryListActivity : AppCompatActivity() {
     fun editCategory(position: Int) {
         val category = categoryList[position]
         showCategoryDialog(category)
+
+        adapter.notifyItemChanged(position)
     }
 
     fun deleteCategory(position: Int) {
@@ -210,10 +212,12 @@ class CategoryListActivity : AppCompatActivity() {
                 categoryList = categoryDAO.getAll()
                 adapter.updateData(categoryList)
             }
-            .setNegativeButton(getString(R.string.alertDialog_negativeButton)) { dialog, which ->
-
+            .setNegativeButton(getString(R.string.alertDialog_negativeButton)) { _, _ ->
+                adapter.notifyItemChanged(position)
             }
-            .setCancelable(false)
+            .setOnCancelListener {
+                adapter.notifyItemChanged(position)
+            }
             .create()
         dialog.show()
 
